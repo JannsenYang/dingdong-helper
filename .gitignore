@@ -32,3 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 user-config.txt
+.run/
