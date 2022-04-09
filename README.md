@@ -26,6 +26,6 @@
 
 
 ### 抓包截图 将你的信息填入
-这个图有时候会挂 直接从项目里面看也一样 就是根目录下的headers.jpeg 和 body.jpeg  对用UserConfig中的headers和body方法里的参数
+这个图有时候会挂，直接从项目里面看也一样，就是根目录下的headers.jpeg 和 body.jpeg  对应到UserConfig中的headers和body方法里的参数
 ![请求头信息](https://github.com/JannsenYang/dingdong-helper/blob/5b72bee57c06c48174b639658ab94d765b744274/headers.jpeg)
 ![请求体信息](https://github.com/JannsenYang/dingdong-helper/blob/5b72bee57c06c48174b639658ab94d765b744274/body.jpeg)
