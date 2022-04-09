@@ -14,16 +14,8 @@ public class UserConfig {
      * 提前获取收货地址id 填写到addressId上 规则为该站点可送达的默认收货地址  如果没有请自行去APP中设置好再运行
      */
     public static void main(String[] args) {
-        int max = 0;
-        String addressId;
-        do {
-            addressId = Api.getAddressId();
-        } while (addressId == null && max++ < 100);
-        if (addressId == null) {
-            System.out.println("未获取到默认收货地址");
-        } else {
-            System.out.println(addressId);
-        }
+        String addressId = Api.getAddressId();
+        System.out.println("addressId：" + addressId);
     }
 
 

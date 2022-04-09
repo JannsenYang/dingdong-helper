@@ -37,7 +37,7 @@ public class Api {
             for (int i = 0; i < validAddress.size(); i++) {
                 JSONObject address = validAddress.getJSONObject(i);
                 if (address.getBool("is_default")) {
-                    System.out.println("获取默认收货地址成功：" + address.getStr("addr_detail") + " 手机号：" + address.getStr("addr_detail"));
+                    System.out.println("获取默认收货地址成功：" + address.getStr("addr_detail") + " 手机号：" + address.getStr("mobile"));
                     return address.getStr("id");
                 }
             }
