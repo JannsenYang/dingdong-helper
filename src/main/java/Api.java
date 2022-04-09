@@ -29,12 +29,12 @@ public class Api {
             JSONObject object = JSONUtil.parseObj(body);
             boolean success = object.getBool("success");
             if (!success) {
-                if("您的访问已过期".equals(object.getStr("message"))){
+                if ("您的访问已过期".equals(object.getStr("message"))) {
                     System.err.println("用户信息失效，请确保UserConfig参数准确，并且微信上的叮咚小程序不能退出登录");
                     Application.map.put("end", new HashMap<>());
                     return null;
                 }
-                System.err.println("获取默认收货地址失败");
+                System.err.println("获取默认收货地址失败:" + JSONUtil.toJsonStr(object.getStr("message")));
                 return null;
             }
             JSONArray validAddress = object.getJSONObject("data").getJSONArray("valid_address");
@@ -76,12 +76,12 @@ public class Api {
             JSONObject object = JSONUtil.parseObj(body);
             boolean success = object.getBool("success");
             if (!success) {
-                if("您的访问已过期".equals(object.getStr("message"))){
+                if ("您的访问已过期".equals(object.getStr("message"))) {
                     System.err.println("用户信息失效，请确保UserConfig参数准确，并且微信上的叮咚小程序不能退出登录");
                     Application.map.put("end", new HashMap<>());
                     return null;
                 }
-                System.err.println("更新购物车数据失败");
+                System.err.println("更新购物车数据失败:" + JSONUtil.toJsonStr(object.getStr("message")));
                 return null;
             }
             JSONObject data = object.getJSONObject("data");
@@ -160,12 +160,12 @@ public class Api {
             JSONObject object = JSONUtil.parseObj(body);
             boolean success = object.getBool("success");
             if (!success) {
-                if("您的访问已过期".equals(object.getStr("message"))){
+                if ("您的访问已过期".equals(object.getStr("message"))) {
                     System.err.println("用户信息失效，请确保UserConfig参数准确，并且微信上的叮咚小程序不能退出登录");
                     Application.map.put("end", new HashMap<>());
                     return null;
                 }
-                System.err.println("更新配送时间失败");
+                System.err.println("更新配送时间失败:" + JSONUtil.toJsonStr(object.getStr("message")));
                 return null;
             }
             Map<String, Object> map = new HashMap<>();
@@ -256,12 +256,12 @@ public class Api {
             JSONObject object = JSONUtil.parseObj(body);
             boolean success = object.getBool("success");
             if (!success) {
-                if("您的访问已过期".equals(object.getStr("message"))){
+                if ("您的访问已过期".equals(object.getStr("message"))) {
                     System.err.println("用户信息失效，请确保UserConfig参数准确，并且微信上的叮咚小程序不能退出登录");
                     Application.map.put("end", new HashMap<>());
                     return null;
                 }
-                System.err.println("更新订单确认信息失败");
+                System.err.println("更新订单确认信息失败:"+ JSONUtil.toJsonStr(object.getStr("message")));
                 return null;
             }
 
@@ -358,12 +358,12 @@ public class Api {
             JSONObject object = JSONUtil.parseObj(body);
             boolean success = object.getBool("success");
             if (!success) {
-                if("您的访问已过期".equals(object.getStr("message"))){
+                if ("您的访问已过期".equals(object.getStr("message"))) {
                     System.err.println("用户信息失效，请确保UserConfig参数准确，并且微信上的叮咚小程序不能退出登录");
                     Application.map.put("end", new HashMap<>());
                     return;
                 }
-                System.err.println("提交订单失败");
+                System.err.println("提交订单失败:" + JSONUtil.toJsonStr(object.getStr("message")));
                 return;
             }
             submitSuccess = object.getJSONObject("data").getStr("pay_url").length() > 0;
