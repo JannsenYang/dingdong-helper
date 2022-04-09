@@ -12,6 +12,7 @@ public class UserConfig {
 
     /**
      * 提前获取收货地址id 填写到addressId上 规则为该站点可送达的默认收货地址  如果没有请自行去APP中设置好再运行
+     * 每天抢之前先允许一下此接口 确认登录信息是否有效 如果失效了重新抓一次包
      */
     public static void main(String[] args) {
         String addressId = Api.getAddressId();
