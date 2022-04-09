@@ -64,7 +64,7 @@ public class Application {
                 }
             }).start();
         }
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             new Thread(() -> {
                 while (!map.containsKey("end")) {
                     if (map.get("cartMap") == null || map.get("multiReserveTimeMap") == null || map.get("checkOrderMap") == null) {
