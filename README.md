@@ -12,3 +12,6 @@
 2. 无配送时间可选
 3. 下单成功
 
+
+![请求头信息](https://github.com/JannsenYang/dingdong-helper/blob/5b72bee57c06c48174b639658ab94d765b744274/headers.jpeg)
+![请求体信息](https://github.com/JannsenYang/dingdong-helper/blob/5b72bee57c06c48174b639658ab94d765b744274/body.jpeg)
