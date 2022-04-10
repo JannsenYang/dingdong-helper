@@ -34,7 +34,7 @@ public class Api {
                     Application.map.put("end", new HashMap<>());
                     return null;
                 }
-                System.err.println("获取默认收货地址失败:" + JSONUtil.toJsonStr(object.getStr("message")));
+                System.err.println("获取默认收货地址失败:" + JSONUtil.toJsonStr(object.getStr("msg")));
                 return null;
             }
             JSONArray validAddress = object.getJSONObject("data").getJSONArray("valid_address");
@@ -81,7 +81,7 @@ public class Api {
                     Application.map.put("end", new HashMap<>());
                     return null;
                 }
-                System.err.println("更新购物车数据失败:" + JSONUtil.toJsonStr(object.getStr("message")));
+                System.err.println("更新购物车数据失败:" + JSONUtil.toJsonStr(object.getStr("msg")));
                 return null;
             }
             JSONObject data = object.getJSONObject("data");
@@ -165,7 +165,7 @@ public class Api {
                     Application.map.put("end", new HashMap<>());
                     return null;
                 }
-                System.err.println("更新配送时间失败:" + JSONUtil.toJsonStr(object.getStr("message")));
+                System.err.println("更新配送时间失败:" + JSONUtil.toJsonStr(object.getStr("msg")));
                 return null;
             }
             Map<String, Object> map = new HashMap<>();
@@ -261,7 +261,7 @@ public class Api {
                     Application.map.put("end", new HashMap<>());
                     return null;
                 }
-                System.err.println("更新订单确认信息失败:"+ JSONUtil.toJsonStr(object.getStr("message")));
+                System.err.println("更新订单确认信息失败:"+ JSONUtil.toJsonStr(object.getStr("msg")));
                 return null;
             }
 
@@ -363,7 +363,7 @@ public class Api {
                     Application.map.put("end", new HashMap<>());
                     return;
                 }
-                System.err.println("提交订单失败:" + JSONUtil.toJsonStr(object.getStr("message")));
+                System.err.println("提交订单失败:" + JSONUtil.toJsonStr(object.getStr("msg")));
                 return;
             }
             submitSuccess = object.getJSONObject("data").getStr("pay_url").length() > 0;
