@@ -261,7 +261,7 @@ public class Api {
                     Application.map.put("end", new HashMap<>());
                     return null;
                 }
-                System.err.println("更新订单确认信息失败:"+ JSONUtil.toJsonStr(object.getStr("msg")));
+                System.err.println("更新订单确认信息失败:" + JSONUtil.toJsonStr(object.getStr("msg")));
                 return null;
             }
 
@@ -291,6 +291,7 @@ public class Api {
      */
     public static void addNewOrder(String addressId, Map<String, Object> cartMap, Map<String, Object> multiReserveTimeMap, Map<String, Object> checkOrderMap) {
         boolean submitSuccess = false;
+        String totalMoney = cartMap.get("total_money") != null ? (String) cartMap.get("total_money") : "";
         try {
             HttpRequest httpRequest = HttpUtil.createPost("https://maicai.api.ddxq.mobi/order/addNewOrder");
             httpRequest.addHeaders(UserConfig.getHeaders());
@@ -363,7 +364,7 @@ public class Api {
                     Application.map.put("end", new HashMap<>());
                     return;
                 }
-                System.err.println("提交订单失败:" + JSONUtil.toJsonStr(object.getStr("msg")));
+                System.err.println("提交订单失败,当前下单总金额：" + totalMoney + " 返回：" + JSONUtil.toJsonStr(object.getStr("msg")));
                 return;
             }
             submitSuccess = object.getJSONObject("data").getStr("pay_url").length() > 0;
@@ -371,7 +372,9 @@ public class Api {
             e.printStackTrace();
         }
         if (submitSuccess) {
-            System.out.println("恭喜你，已成功下单");
+            for (int i = 0; i < 10; i++) {
+                System.out.println("恭喜你，已成功下单 当前下单总金额：" + totalMoney);
+            }
             Application.map.put("end", new HashMap<>());
         }
     }
