@@ -25,10 +25,14 @@
 
 最后希望疫情早日结束大家伙都能吃上饭
 
-### 20220410实战记录
-用了的全部秒抢，我自己傻逼了，为了提交github，收货地址id在运行的时候忘记填了，跑了几分钟才后知后觉，随即补上了失败时的返回信息。
-
 ### 抓包截图 将你的信息填入
 这个图有时候会挂，直接从项目里面看也一样，就是根目录下的headers.jpeg 和 body.jpeg  对应到UserConfig中的headers和body方法里的参数
-![请求头信息](https://github.com/JannsenYang/dingdong-helper/blob/5b72bee57c06c48174b639658ab94d765b744274/headers.jpeg)
-![请求体信息](https://github.com/JannsenYang/dingdong-helper/blob/5b72bee57c06c48174b639658ab94d765b744274/body.jpeg)
+![请求头信息](https://github.com/JannsenYang/dingdong-helper/blob/f6e20d377aa482063732a5be614e3dae3d4c5091/image/headers.jpeg)
+![请求体信息](https://github.com/JannsenYang/dingdong-helper/blob/f6e20d377aa482063732a5be614e3dae3d4c5091/image/body.jpeg)
+
+### 20220410实战记录
+用了的全部秒抢，我自己傻逼了，为了提交github，收货地址id在运行的时候忘记填了，跑了几分钟才后知后觉，随即补上了失败时的返回信息。
+![实战记录1](https://github.com/JannsenYang/dingdong-helper/blob/f6e20d377aa482063732a5be614e3dae3d4c5091/image/20220410-1.png)
+![实战记录2](https://github.com/JannsenYang/dingdong-helper/blob/f6e20d377aa482063732a5be614e3dae3d4c5091/image/20220410-2.png)
+
+
