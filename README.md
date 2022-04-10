@@ -26,7 +26,7 @@
 最后希望疫情早日结束大家伙都能吃上饭
 
 ### 抓包截图 将你的信息填入
-这个图有时候会挂，直接从项目里面看也一样，就是根目录下的headers.jpeg 和 body.jpeg  对应到UserConfig中的headers和body方法里的参数
+这个图有时候会挂，直接从项目里面看也一样，就是路径image/headers.jpeg 和 body.jpeg  对应到UserConfig中的headers和body方法里的参数
 ![请求头信息](https://github.com/JannsenYang/dingdong-helper/blob/f6e20d377aa482063732a5be614e3dae3d4c5091/image/headers.jpeg)
 ![请求体信息](https://github.com/JannsenYang/dingdong-helper/blob/f6e20d377aa482063732a5be614e3dae3d4c5091/image/body.jpeg)
 
