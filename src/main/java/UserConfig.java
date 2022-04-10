@@ -19,7 +19,9 @@ public class UserConfig {
         System.out.println("addressId：" + addressId);
     }
 
-
+    /**
+     * 抓包后参考项目中的headers.jpeg 把信息一行一行copy到下面 没有的key不需要复制
+     */
     public static Map<String, String> getHeaders() {
         Map<String, String> headers = new HashMap<>();
         headers.put("ddmc-city-number", "");
@@ -40,6 +42,11 @@ public class UserConfig {
         return headers;
     }
 
+    /**
+     * 抓包后参考项目中的body.jpeg 把信息一行一行copy到下面 没有的key不需要复制
+     *
+     * 这里不能加泛型 有些接口是params  泛型必须要求<String,String> 有些是form表单 泛型要求<String,Object> 无法统一
+     */
     public static Map getBody() {
         Map body = new HashMap<>();
         body.put("uid", "");
