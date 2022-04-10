@@ -7,7 +7,7 @@ import java.util.Map;
  */
 public class UserConfig {
 
-    //站点id
+    //收货地址id
     public static final String addressId = "";
 
     /**
