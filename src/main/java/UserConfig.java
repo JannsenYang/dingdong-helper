@@ -27,7 +27,7 @@ public class UserConfig {
         headers.put("ddmc-city-number", "");
         headers.put("ddmc-build-version", "");
         headers.put("ddmc-device-id", "");
-        headers.put("ddmc-station-id", "");
+        headers.put("ddmc-station-id", "");//这个是站点id 请仔细检查和确认这个参数 进入小程序之后首页左上角是不是你所在的站点 如果不是先选择好站点再抓包 不要把站点搞错了 否则不能下单
         headers.put("ddmc-channel", "applet");
         headers.put("ddmc-os-version", "[object Undefined]");
         headers.put("ddmc-app-client-id", "4");
@@ -52,7 +52,7 @@ public class UserConfig {
         body.put("uid", "");
         body.put("longitude", "");
         body.put("latitude", "");
-        body.put("station_id", "");
+        body.put("station_id", "");//这个是站点id 请仔细检查和确认这个参数 进入小程序之后首页左上角是不是你所在的站点 如果不是先选择好站点再抓包 不要把站点搞错了 否则不能下单
         body.put("city_number", "");
         body.put("api_version", "");
         body.put("app_version", "");
