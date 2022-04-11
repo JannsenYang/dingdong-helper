@@ -12,11 +12,12 @@ public class UserConfig {
 
     /**
      * 提前获取收货地址id 填写到addressId上 规则为该站点可送达的默认收货地址  如果没有请自行去APP中设置好再运行
+     * 确认站点信息是否正确 如果不正确会导致购物车应该有东西显示无可购买或者下单失败
      * 每天抢之前先允许一下此接口 确认登录信息是否有效 如果失效了重新抓一次包
      */
     public static void main(String[] args) {
         String addressId = Api.getAddressId();
-        System.out.println("addressId：" + addressId);
+        System.out.println("请将addressId填入UserConfig.addressId变量中：" + addressId);
     }
 
     /**
@@ -44,7 +45,7 @@ public class UserConfig {
 
     /**
      * 抓包后参考项目中的image/body.jpeg 把信息一行一行copy到下面 没有的key不需要复制
-     *
+     * <p>
      * 这里不能加泛型 有些接口是params  泛型必须要求<String,String> 有些是form表单 泛型要求<String,Object> 无法统一
      */
     public static Map getBody() {

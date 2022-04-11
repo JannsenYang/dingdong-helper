@@ -23,7 +23,7 @@ public class Api {
         Boolean success = object.getBool("success");
         if (success == null) {
             if ("405".equals(object.getStr("code"))) {
-                System.out.println(actionName + "失败:" + "请求频率过高，已被网关拦截，请更换ip（切成手机热点，或重启猫，重启猫也可能ip不会变）或稍后再试，不要长时间跑程序，叮咚只开放6点和8点半上架新商品和配送额度（现行政策），如果这两个时间段买不到东西就不要再跑了");
+                System.out.println(actionName + "失败:" + "不要长时间运行程序，目前已知有人被风控了，暂时未确认风控的因素是ip还是用户或设备相关信息，如果要测试用单次执行模式，并发只能用于6点、8点半的前一分钟，然后执行时间不能超过2分钟，如果买不到就不要再执行程序了，切忌切忌，如果已经被风控的可以尝试改一下ip，或者换号");
             } else {
                 System.out.println(actionName + "失败,服务器返回无法解析的内容:" + JSONUtil.toJsonStr(object));
             }
@@ -40,6 +40,7 @@ public class Api {
         System.err.println(actionName + "失败:" + object.getStr("msg"));
         return false;
     }
+
 
     /**
      * 获取有效的默认收货地址id
@@ -64,7 +65,24 @@ public class Api {
             for (int i = 0; i < validAddress.size(); i++) {
                 JSONObject address = validAddress.getJSONObject(i);
                 if (address.getBool("is_default")) {
-                    System.out.println("获取默认收货地址成功：" + address.getStr("addr_detail") + " 手机号：" + address.getStr("mobile"));
+                    System.out.println("请仔细核对站点和收货地址信息 站点信息配置错误将导致无法下单");
+                    System.out.println("1.获取默认收货地址成功：" + address.getStr("addr_detail") + " 手机号：" + address.getStr("mobile"));
+                    System.out.println("2.该地址对应站点名称为：" + address.getJSONObject("station_info").get("name"));
+                    System.out.println("3.确认站点id是否和UserInfo headers中ddmc-station-id还有body中station_id一致 如果不一致则修改为输出的这个station id：" + address.getJSONObject("station_info").get("id"));
+                    System.out.println("正在执行代码校验station id是否准确");
+                    String stationId = address.getJSONObject("station_info").getStr("id");
+                    boolean stationsIdSuccess = true;
+                    if (!UserConfig.getHeaders().get("ddmc-station-id").equals(stationId)) {
+                        System.err.println("headers中ddmc-station-id不匹配当前收货地址站点id");
+                        stationsIdSuccess = false;
+                    }
+                    if (!UserConfig.getBody().get("station_id").equals(stationId)) {
+                        System.err.println("body中station_id不匹配当前收货地址站点id");
+                        stationsIdSuccess = false;
+                    }
+                    if (stationsIdSuccess) {
+                        System.out.println("站点id配置正常");
+                    }
                     return address.getStr("id");
                 }
             }
