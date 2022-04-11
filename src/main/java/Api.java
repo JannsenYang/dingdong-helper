@@ -159,7 +159,7 @@ public class Api {
                 map.put("products", products);
                 map.put("parent_order_sign", data.getJSONObject("parent_order_info").get("parent_order_sign"));
                 map.put("total_money", newOrderProduct.get("total_money"));
-                map.put("total_origin_money", newOrderProduct.get("parent_order_info"));
+                map.put("total_origin_money", newOrderProduct.get("total_origin_money"));
                 map.put("goods_real_money", newOrderProduct.get("goods_real_money"));
                 map.put("total_count", newOrderProduct.get("total_count"));
                 map.put("cart_count", newOrderProduct.get("cart_count"));
