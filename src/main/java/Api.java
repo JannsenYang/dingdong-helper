@@ -13,6 +13,35 @@ import java.util.*;
 public class Api {
 
     /**
+     * 验证请求是否成功
+     *
+     * @param object     返回体
+     * @param actionName 动作名称
+     * @return 是否成功
+     */
+    private static boolean isSuccess(JSONObject object, String actionName) {
+        Boolean success = object.getBool("success");
+        if (success == null) {
+            if ("405".equals(object.getStr("code"))) {
+                System.out.println(actionName + "失败:" + "请求频率过高，已被网关拦截，请更换ip（切成手机热点，或重启猫，重启猫也可能ip不会变）或稍后再试，不要长时间跑程序，叮咚只开放6点和8点半上架新商品和配送额度（现行政策），如果这两个时间段买不到东西就不要再跑了");
+            } else {
+                System.out.println(actionName + "失败,服务器返回无法解析的内容:" + JSONUtil.toJsonStr(object));
+            }
+            return false;
+        }
+        if (success) {
+            return true;
+        }
+        if ("您的访问已过期".equals(object.getStr("message"))) {
+            System.err.println("用户信息失效，请确保UserConfig参数准确，并且微信上的叮咚小程序不能退出登录");
+            Application.map.put("end", new HashMap<>());
+            return false;
+        }
+        System.err.println(actionName + "失败:" + object.getStr("msg"));
+        return false;
+    }
+
+    /**
      * 获取有效的默认收货地址id
      *
      * @return 收货地址id
@@ -27,14 +56,7 @@ public class Api {
 
             String body = httpRequest.execute().body();
             JSONObject object = JSONUtil.parseObj(body);
-            boolean success = object.getBool("success");
-            if (!success) {
-                if ("您的访问已过期".equals(object.getStr("message"))) {
-                    System.err.println("用户信息失效，请确保UserConfig参数准确，并且微信上的叮咚小程序不能退出登录");
-                    Application.map.put("end", new HashMap<>());
-                    return null;
-                }
-                System.err.println("获取默认收货地址失败:" + JSONUtil.toJsonStr(object.getStr("msg")));
+            if (!isSuccess(object, "获取默认收货地址")) {
                 return null;
             }
             JSONArray validAddress = object.getJSONObject("data").getJSONArray("valid_address");
@@ -59,6 +81,29 @@ public class Api {
 
 
     /**
+     * 全选按钮
+     */
+    public static void allCheck() {
+        try {
+            HttpRequest httpRequest = HttpUtil.createGet("https://maicai.api.ddxq.mobi/cart/allCheck");
+            httpRequest.addHeaders(UserConfig.getHeaders());
+            Map<String, String> request = UserConfig.getBody();
+            request.put("is_check", "1");
+            httpRequest.formStr(request);
+
+            String body = httpRequest.execute().body();
+            JSONObject object = JSONUtil.parseObj(body);
+
+            if (!isSuccess(object, "勾选购物车全选按钮")) {
+                return;
+            }
+            System.out.println("勾选购物车全选按钮成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 获取购物车信息
      *
      * @return 购物车信息
@@ -74,16 +119,11 @@ public class Api {
 
             String body = httpRequest.execute().body();
             JSONObject object = JSONUtil.parseObj(body);
-            boolean success = object.getBool("success");
-            if (!success) {
-                if ("您的访问已过期".equals(object.getStr("message"))) {
-                    System.err.println("用户信息失效，请确保UserConfig参数准确，并且微信上的叮咚小程序不能退出登录");
-                    Application.map.put("end", new HashMap<>());
-                    return null;
-                }
-                System.err.println("更新购物车数据失败:" + JSONUtil.toJsonStr(object.getStr("msg")));
+
+            if (!isSuccess(object, "更新购物车数据")) {
                 return null;
             }
+
             JSONObject data = object.getJSONObject("data");
 
             if (data.getJSONArray("new_order_product_list").size() == 0) {
@@ -158,14 +198,7 @@ public class Api {
             httpRequest.form(request);
             String body = httpRequest.execute().body();
             JSONObject object = JSONUtil.parseObj(body);
-            boolean success = object.getBool("success");
-            if (!success) {
-                if ("您的访问已过期".equals(object.getStr("message"))) {
-                    System.err.println("用户信息失效，请确保UserConfig参数准确，并且微信上的叮咚小程序不能退出登录");
-                    Application.map.put("end", new HashMap<>());
-                    return null;
-                }
-                System.err.println("更新配送时间失败:" + JSONUtil.toJsonStr(object.getStr("msg")));
+            if (!isSuccess(object, "更新配送时间")) {
                 return null;
             }
             Map<String, Object> map = new HashMap<>();
@@ -254,14 +287,8 @@ public class Api {
 
             String body = httpRequest.execute().body();
             JSONObject object = JSONUtil.parseObj(body);
-            boolean success = object.getBool("success");
-            if (!success) {
-                if ("您的访问已过期".equals(object.getStr("message"))) {
-                    System.err.println("用户信息失效，请确保UserConfig参数准确，并且微信上的叮咚小程序不能退出登录");
-                    Application.map.put("end", new HashMap<>());
-                    return null;
-                }
-                System.err.println("更新订单确认信息失败:" + JSONUtil.toJsonStr(object.getStr("msg")));
+
+            if (!isSuccess(object, "更新订单确认信息")) {
                 return null;
             }
 
@@ -357,14 +384,8 @@ public class Api {
             httpRequest.form(request);
             String body = httpRequest.execute().body();
             JSONObject object = JSONUtil.parseObj(body);
-            boolean success = object.getBool("success");
-            if (!success) {
-                if ("您的访问已过期".equals(object.getStr("message"))) {
-                    System.err.println("用户信息失效，请确保UserConfig参数准确，并且微信上的叮咚小程序不能退出登录");
-                    Application.map.put("end", new HashMap<>());
-                    return;
-                }
-                System.err.println("提交订单失败,当前下单总金额：" + totalMoney + " 返回：" + JSONUtil.toJsonStr(object.getStr("msg")));
+
+            if (!isSuccess(object, "提交订单失败,当前下单总金额：" + totalMoney)) {
                 return;
             }
             submitSuccess = object.getJSONObject("data").getStr("pay_url").length() > 0;
