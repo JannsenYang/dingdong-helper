@@ -31,30 +31,42 @@ public class Application {
 
         //此为高峰期策略 通过同时获取或更新 购物车、配送、订单确认信息再进行高并发提交订单
 
-        for (int i = 0; i < 3; i++) {
+        //一定要注意 并发量过高会导致被风控 请合理设置线程数、等待时间和执行时间 不要长时间的执行此程序（2分钟以内）
+
+        //基础信息执行线程数
+        int baseTheadSize = 2;
+
+        //提交订单执行线程数
+        int submitOrderTheadSize = 6;
+
+        //请求间隔时间
+        int sleepMillis = 100;
+
+        for (int i = 0; i < baseTheadSize; i++) {
             new Thread(() -> {
                 while (!map.containsKey("end")) {
                     Api.allCheck();
+                    //此接口作为补充使用 并不是一定需要 所以执行间隔拉大一点
                     sleep(1000);
                 }
             }).start();
         }
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < baseTheadSize; i++) {
             new Thread(() -> {
                 while (!map.containsKey("end")) {
                     Map<String, Object> cartMap = Api.getCart();
                     if (cartMap != null) {
                         map.put("cartMap", cartMap);
                     }
-                    sleep(100);
+                    sleep(sleepMillis);
                 }
             }).start();
         }
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < baseTheadSize; i++) {
             new Thread(() -> {
                 while (!map.containsKey("end")) {
-                    sleep(100);
+                    sleep(sleepMillis);
                     if (map.get("cartMap") == null) {
                         continue;
                     }
@@ -65,10 +77,10 @@ public class Application {
                 }
             }).start();
         }
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < baseTheadSize; i++) {
             new Thread(() -> {
                 while (!map.containsKey("end")) {
-                    sleep(100);
+                    sleep(sleepMillis);
                     if (map.get("cartMap") == null || map.get("multiReserveTimeMap") == null) {
                         continue;
                     }
@@ -79,11 +91,11 @@ public class Application {
                 }
             }).start();
         }
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < submitOrderTheadSize; i++) {
             new Thread(() -> {
                 while (!map.containsKey("end")) {
                     if (map.get("cartMap") == null || map.get("multiReserveTimeMap") == null || map.get("checkOrderMap") == null) {
-                        sleep(100);
+                        sleep(sleepMillis);
                         continue;
                     }
                     Api.addNewOrder(UserConfig.addressId, map.get("cartMap"), map.get("multiReserveTimeMap"), map.get("checkOrderMap"));
