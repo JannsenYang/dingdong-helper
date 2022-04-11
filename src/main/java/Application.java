@@ -7,7 +7,7 @@ public class Application {
     public static final Map<String, Map<String, Object>> map = new ConcurrentHashMap<>();
 
 
-    public static void sleep() {
+    public static void sleep(int millis) {
         try {
             Thread.sleep(100);
         } catch (InterruptedException ignored) {
@@ -22,6 +22,7 @@ public class Application {
             return;
         }
 //   此为单次执行模式  用于在非高峰期测试下单  也必须满足3个前提条件  1.有收货地址  2.购物车有商品 3.能选择配送信息
+//        Map<String, Object> cartMap = Api.allCheck();
 //        Map<String, Object> cartMap = Api.getCart();
 //        Map<String, Object> multiReserveTimeMap = Api.getMultiReserveTime(UserConfig.addressId, cartMap);
 //        Map<String, Object> checkOrderMap = Api.getCheckOrder(UserConfig.addressId, cartMap, multiReserveTimeMap);
@@ -29,21 +30,31 @@ public class Application {
 
 
         //此为高峰期策略 通过同时获取或更新 购物车、配送、订单确认信息再进行高并发提交订单
+
         for (int i = 0; i < 3; i++) {
             new Thread(() -> {
                 while (!map.containsKey("end")) {
-                    sleep();
+                    Api.allCheck();
+                    sleep(1000);
+                }
+            }).start();
+        }
+
+        for (int i = 0; i < 3; i++) {
+            new Thread(() -> {
+                while (!map.containsKey("end")) {
                     Map<String, Object> cartMap = Api.getCart();
                     if (cartMap != null) {
                         map.put("cartMap", cartMap);
                     }
+                    sleep(100);
                 }
             }).start();
         }
         for (int i = 0; i < 3; i++) {
             new Thread(() -> {
                 while (!map.containsKey("end")) {
-                    sleep();
+                    sleep(100);
                     if (map.get("cartMap") == null) {
                         continue;
                     }
@@ -57,7 +68,7 @@ public class Application {
         for (int i = 0; i < 3; i++) {
             new Thread(() -> {
                 while (!map.containsKey("end")) {
-                    sleep();
+                    sleep(100);
                     if (map.get("cartMap") == null || map.get("multiReserveTimeMap") == null) {
                         continue;
                     }
@@ -72,7 +83,7 @@ public class Application {
             new Thread(() -> {
                 while (!map.containsKey("end")) {
                     if (map.get("cartMap") == null || map.get("multiReserveTimeMap") == null || map.get("checkOrderMap") == null) {
-                        sleep();
+                        sleep(100);
                         continue;
                     }
                     Api.addNewOrder(UserConfig.addressId, map.get("cartMap"), map.get("multiReserveTimeMap"), map.get("checkOrderMap"));
