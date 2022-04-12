@@ -213,6 +213,9 @@ public class Api {
      * @return 配送信息
      */
     public static Map<String, Object> getMultiReserveTime(String addressId, Map<String, Object> cartMap) {
+        if (cartMap == null) {
+            return null;
+        }
         boolean noReserveTime = false;
         try {
             HttpRequest httpRequest = HttpUtil.createPost("https://maicai.api.ddxq.mobi/order/getMultiReserveTime");
