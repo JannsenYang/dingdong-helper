@@ -1,7 +1,8 @@
 # dingdong-helper
 叮咚自动下单 并发调用接口方式 多人实战反馈10秒以内成功 自动将购物车能买的商品全部下单 只需自行编辑购物车和最后支付即可
 
-不考虑分批多次使用优惠券下单（会选择一张推荐优惠券），当前情形下能下单就很好了，所以我会将购物车里所有能买的东西一次下单，博最高的概率买到东西才是正道
+当前时间2022-04-12根据自身和身边朋友反馈正常下单，但不能保证每一个人都能成功下单，如果此程序完全不可用，我会更新到这个位置
+
 
 # 特别强调 注意事项
 1. 此程序只用来帮助在上海急需买菜的程序猿，请误商用
@@ -83,8 +84,8 @@
 ## 抓包截图 将你的信息填入
 
 这个图有时候会挂，直接从项目里面看也一样，就是路径image/headers.jpeg 和 body.jpeg  对应到UserConfig中的headers和body方法里的参数
-![请求头信息](https://github.com/JannsenYang/dingdong-helper/blob/3f1847b6f5c363168de733380d9f3cb02a64b8a6/image/headers.jpeg)
-![请求体信息](https://github.com/JannsenYang/dingdong-helper/blob/3f1847b6f5c363168de733380d9f3cb02a64b8a6/image/body.jpeg)
+![请求头信息](https://github.com/JannsenYang/dingdong-helper/blob/8a16a972185cd4e560c24b57137dcd90b929efcb/image/headers.jpg)
+![请求体信息](https://github.com/JannsenYang/dingdong-helper/blob/8a16a972185cd4e560c24b57137dcd90b929efcb/image/body.jpg)
 
 ## 20220410实战记录
 
