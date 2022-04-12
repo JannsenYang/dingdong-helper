@@ -230,9 +230,10 @@ public class Api {
             }
             Map<String, Object> map = new HashMap<>();
             JSONArray times = object.getJSONArray("data").getJSONObject(0).getJSONArray("time").getJSONObject(0).getJSONArray("times");
+
             for (int i = 0; i < times.size(); i++) {
                 JSONObject time = times.getJSONObject(i);
-                if (time.getInt("disableType") == 0) {
+                if (time.getInt("disableType") == 0 && !time.getStr("select_msg").contains("尽快")) {
                     map.put("reserved_time_start", time.get("start_timestamp"));
                     map.put("reserved_time_end", time.get("end_timestamp"));
                     System.out.println("更新配送时间成功");
