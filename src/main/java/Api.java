@@ -218,7 +218,7 @@ public class Api {
             HttpRequest httpRequest = HttpUtil.createPost("https://maicai.api.ddxq.mobi/order/getMultiReserveTime");
             httpRequest.addHeaders(UserConfig.getHeaders());
             Map<String, Object> request = UserConfig.getBody();
-            request.put("addressId", addressId);
+            request.put("address_id", addressId);
             request.put("products", "[" + JSONUtil.toJsonStr(cartMap.get("products")) + "]");
             request.put("group_config_id", "");
             request.put("isBridge", "false");
@@ -265,7 +265,7 @@ public class Api {
             HttpRequest httpRequest = HttpUtil.createPost("https://maicai.api.ddxq.mobi/order/checkOrder");
             httpRequest.addHeaders(UserConfig.getHeaders());
             Map<String, Object> request = UserConfig.getBody();
-            request.put("addressId", addressId);
+            request.put("address_id", addressId);
             request.put("user_ticket_id", "default");
             request.put("freight_ticket_id", "default");
             request.put("is_use_point", "0");
@@ -406,7 +406,8 @@ public class Api {
             packagesMap.put("reserved_time_start", multiReserveTimeMap.get("reserved_time_start"));
             packagesMap.put("reserved_time_end", multiReserveTimeMap.get("reserved_time_end"));
             packagesMap.put("soon_arrival", "");
-            packagesMap.put("first_selected_big_time", 1);
+            packagesMap.put("first_selected_big_time", 0);
+            packagesMap.put("receipt_without_sku", 0);
             request.put("package_order", JSONUtil.toJsonStr(packageOrderMap));
 
             httpRequest.form(request);
