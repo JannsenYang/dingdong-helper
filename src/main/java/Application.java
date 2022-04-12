@@ -12,7 +12,7 @@ public class Application {
 
     public static void sleep(int millis) {
         try {
-            Thread.sleep(100);
+            Thread.sleep(millis);
         } catch (InterruptedException ignored) {
         }
     }

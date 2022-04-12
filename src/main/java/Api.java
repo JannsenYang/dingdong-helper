@@ -199,7 +199,7 @@ public class Api {
         }
         if (noProducts) {
             System.err.println("购物车无可买的商品");
-            Application.map.put("end", new HashMap<>());
+            Application.map.put("end", new HashMap<>());//这一行是判断是否终止的 如果是捡漏模式 请注释这一行
         }
         return null;
     }
