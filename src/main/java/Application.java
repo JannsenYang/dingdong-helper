@@ -1,6 +1,9 @@
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 抢菜主程序
+ */
 public class Application {
 
 
