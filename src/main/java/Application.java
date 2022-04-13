@@ -34,17 +34,17 @@ public class Application {
         int baseTheadSize = 2;
 
         //提交订单执行线程数
-        int submitOrderTheadSize = 6;
+        int submitOrderTheadSize = 4;
 
         //请求间隔时间
-        int sleepMillis = 100;
+        int sleepMillis = 300;
 
         for (int i = 0; i < baseTheadSize; i++) {
             new Thread(() -> {
                 while (!map.containsKey("end")) {
                     Api.allCheck();
                     //此接口作为补充使用 并不是一定需要 所以执行间隔拉大一点
-                    sleep(1000);
+                    sleep(5000);
                 }
             }).start();
         }
