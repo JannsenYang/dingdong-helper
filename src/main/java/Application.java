@@ -17,6 +17,14 @@ public class Application {
         }
     }
 
+    private static boolean timeTrigger(int hour, int minute, int second) {
+        sleep(1000);
+        int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
+        int currentSecond = Calendar.getInstance().get(Calendar.SECOND);
+        System.out.println("时间触发 当前时间 " + currentHour + ":" + currentMinute + ":" + currentSecond + " 目标时间 " + hour + ":" + minute + ":" + second);
+        return currentHour == hour && currentMinute == minute && currentSecond >= second;
+    }
 
     public static void main(String[] args) {
         if (UserConfig.addressId.length() == 0) {
@@ -32,7 +40,7 @@ public class Application {
         //policy设置2 时间触发 运行程序后等待早上5点59分30秒开始
         //policy设置3 时间触发 运行程序后等待早上8点29分30秒开始
         int policy = 1;//默认人工模式
-        
+
         //最小订单成交金额 举例如果设置成50 那么订单要超过50才会下单
         double minOrderPrice = 0;
 
@@ -50,23 +58,11 @@ public class Application {
 
 
         //5点59分30秒时间触发
-        while (policy == 2) {
-            sleep(1000);
-            if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) == 5 &&
-                    Calendar.getInstance().get(Calendar.MINUTE) == 59 &&
-                    Calendar.getInstance().get(Calendar.SECOND) >= 30) {
-                break;
-            }
+        while (policy == 2 && !timeTrigger(5, 59, 30)) {
         }
 
         //8点29分30秒时间触发
-        while (policy == 3) {
-            sleep(1000);
-            if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) == 8 &&
-                    Calendar.getInstance().get(Calendar.MINUTE) == 29 &&
-                    Calendar.getInstance().get(Calendar.SECOND) >= 30) {
-                break;
-            }
+        while (policy == 3 && !timeTrigger(8, 29, 30)) {
         }
 
         //保护线程 2分钟未下单自动终止 避免对叮咚服务器造成压力 也避免封号  如果想长时间执行 请使用Sentinel哨兵模式
