@@ -68,6 +68,9 @@ public class Application {
         //一定要注意 并发量过高会导致被风控 请合理设置线程数、等待时间和执行时间 不要长时间的执行此程序（我配置的线程数和间隔 2分钟以内）
         //如果想等过高峰期后进行简陋 长时间执行 则将线程数改为1  间隔时间改为10秒以上 并发越小越像真人 不会被风控  要更真一点就用随机数（自己处理）
 
+        //最小订单成交金额 举例如果设置成50 那么订单要超过50才会下单
+        double minOrderPrice = 0;
+
         //基础信息执行线程数
         int baseTheadSize = 2;
 
@@ -95,7 +98,11 @@ public class Application {
                 while (!Api.context.containsKey("end")) {
                     Map<String, Object> cartMap = Api.getCart(false);
                     if (cartMap != null) {
-                        Api.context.put("cartMap", cartMap);
+                        if (Double.parseDouble(cartMap.get("total_money").toString()) < minOrderPrice) {
+                            System.err.println("订单金额：" + cartMap.get("total_money").toString() + " 不满足最小金额设置：" + minOrderPrice + " 继续重试");
+                        } else {
+                            Api.context.put("cartMap", cartMap);
+                        }
                     }
                     sleep(RandomUtil.randomInt(sleepMillisMin, sleepMillisMax));
                 }
