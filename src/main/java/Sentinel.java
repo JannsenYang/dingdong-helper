@@ -21,7 +21,7 @@ public class Sentinel {
         //执行任务请求间隔时间最小值
         int sleepMillisMin = 30000;
         //执行任务请求间隔时间最大值
-        int sleepMillisMax = 600000;
+        int sleepMillisMax = 60000;
 
         boolean first = true;
         while (!Api.context.containsKey("end")) {
