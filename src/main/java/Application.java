@@ -58,7 +58,7 @@ public class Application {
 
 
         //5点59分30秒时间触发
-        while (policy == 2 && !timeTrigger(5, 59, 30)) {
+        while (policy == 2 && !timeTrigger(5, 59, 20)) {
         }
 
         //8点29分30秒时间触发
@@ -91,7 +91,7 @@ public class Application {
         for (int i = 0; i < baseTheadSize; i++) {
             new Thread(() -> {
                 while (!Api.context.containsKey("end")) {
-                    Map<String, Object> cartMap = Api.getCart(false);
+                    Map<String, Object> cartMap = Api.getCart(policy == 2 || policy == 3);
                     if (cartMap != null) {
                         if (Double.parseDouble(cartMap.get("total_money").toString()) < minOrderPrice) {
                             System.err.println("订单金额：" + cartMap.get("total_money").toString() + " 不满足最小金额设置：" + minOrderPrice + " 继续重试");
