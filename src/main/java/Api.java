@@ -4,13 +4,33 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.google.common.collect.ImmutableMap;
+import lombok.SneakyThrows;
 
+import java.applet.Applet;
+import java.applet.AudioClip;
+import java.io.File;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 接口封装
  */
 public class Api {
+
+    public static final Map<String, Map<String, Object>> context = new ConcurrentHashMap<>();
+
+
+    /**
+     * 时间触发模式和哨兵模式播放音效提醒 请将电脑声音开到合适音量
+     */
+    @SneakyThrows
+    public static void play() {
+        //这里还可以使用企业微信或者钉钉的提供的webhook  自己写代码 很简单 就是按对应数据格式发一个请求到企业微信或者钉钉
+        AudioClip audioClip = Applet.newAudioClip(new File("ding-dong.wav").toURL());
+        audioClip.loop();
+        Thread.sleep(60000);//响铃60秒
+    }
+
 
     /**
      * 验证请求是否成功
@@ -34,7 +54,7 @@ public class Api {
         }
         if ("您的访问已过期".equals(object.getStr("message"))) {
             System.err.println("用户信息失效，请确保UserConfig参数准确，并且微信上的叮咚小程序不能退出登录");
-            Application.map.put("end", new HashMap<>());
+            context.put("end", new HashMap<>());
             return false;
         }
         String msg = null;
@@ -101,7 +121,7 @@ public class Api {
         }
         if (noAddress) {
             System.err.println("没有可用的默认收货地址，请自行登录叮咚设置该站点可用的默认收货地址");
-            Application.map.put("end", new HashMap<>());
+            context.put("end", new HashMap<>());
         }
         return null;
     }
@@ -133,9 +153,10 @@ public class Api {
     /**
      * 获取购物车信息
      *
+     * @param noProductsContinue 无商品是否继续
      * @return 购物车信息
      */
-    public static Map<String, Object> getCart() {
+    public static Map<String, Object> getCart(boolean noProductsContinue) {
         boolean noProducts = false;
         try {
             HttpRequest httpRequest = HttpUtil.createGet("https://maicai.api.ddxq.mobi/cart/index");
@@ -191,7 +212,7 @@ public class Api {
                 map.put("front_package_type", newOrderProduct.get("front_package_type"));
                 map.put("front_package_stock_color", newOrderProduct.get("front_package_stock_color"));
                 map.put("front_package_bg_color", newOrderProduct.get("front_package_bg_color"));
-                System.out.println("更新购物车数据成功");
+                System.out.println("更新购物车数据成功,订单金额：" + newOrderProduct.get("total_money"));
                 return map;
             }
         } catch (Exception e) {
@@ -199,7 +220,9 @@ public class Api {
         }
         if (noProducts) {
             System.err.println("购物车无可买的商品");
-            Application.map.put("end", new HashMap<>());//这一行是判断是否终止的 如果是捡漏模式 请注释这一行
+            if (!noProductsContinue) {
+                context.put("end", new HashMap<>());
+            }
         }
         return null;
     }
@@ -246,7 +269,7 @@ public class Api {
         }
         if (noReserveTime) {
             System.err.println("无可选的配送时间");
-            Application.map.remove("multiReserveTimeMap");
+            context.remove("multiReserveTimeMap");
             //此处不停止程序 可在开放之前提前执行
         }
         return null;
@@ -344,7 +367,7 @@ public class Api {
      * @param multiReserveTimeMap 配送信息
      * @param checkOrderMap       订单确认信息
      */
-    public static void addNewOrder(String addressId, Map<String, Object> cartMap, Map<String, Object> multiReserveTimeMap, Map<String, Object> checkOrderMap) {
+    public static boolean addNewOrder(String addressId, Map<String, Object> cartMap, Map<String, Object> multiReserveTimeMap, Map<String, Object> checkOrderMap) {
         boolean submitSuccess = false;
         String totalMoney = cartMap.get("total_money") != null ? (String) cartMap.get("total_money") : "";
         try {
@@ -415,7 +438,7 @@ public class Api {
             JSONObject object = JSONUtil.parseObj(body);
 
             if (!isSuccess(object, "提交订单失败,当前下单总金额：" + totalMoney)) {
-                return;
+                return false;
             }
             submitSuccess = object.getJSONObject("data").getStr("pay_url").length() > 0;
         } catch (Exception e) {
@@ -425,8 +448,10 @@ public class Api {
             for (int i = 0; i < 10; i++) {
                 System.out.println("恭喜你，已成功下单 当前下单总金额：" + totalMoney);
             }
-            Application.map.put("end", new HashMap<>());
+            context.put("success", new HashMap<>());
+            context.put("end", new HashMap<>());
         }
+        return submitSuccess;
     }
 
 }
