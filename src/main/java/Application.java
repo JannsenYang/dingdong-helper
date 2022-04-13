@@ -1,13 +1,13 @@
+import cn.hutool.core.util.RandomUtil;
+
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 抢菜主程序
+ * 抢菜主程序 只能用于高峰期 并且运行两分钟以内 如未抢到不要再继续执行
  */
 public class Application {
-
-
-    public static final Map<String, Map<String, Object>> map = new ConcurrentHashMap<>();
 
 
     public static void sleep(int millis) {
@@ -19,83 +19,127 @@ public class Application {
 
 
     public static void main(String[] args) {
-
         if (UserConfig.addressId.length() == 0) {
             System.err.println("请先执行UserConfig获取配送地址id");
             return;
         }
 
-        //此为高峰期策略 通过同时获取或更新 购物车、配送、订单确认信息再进行高并发提交订单
+        //并发执行策略
+        //policy设置1 人工模式 运行程序则开始抢
+        //policy设置2 时间触发 运行程序后等待早上5点59分30秒开始
+        //policy设置3 时间触发 运行程序后等待早上8点29分30秒开始
+        int policy = 1;//默认人工模式
 
+
+        //5点59分30秒时间触发
+        while (policy == 2) {
+            sleep(1000);
+            if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) == 5 &&
+                    Calendar.getInstance().get(Calendar.MINUTE) == 59 &&
+                    Calendar.getInstance().get(Calendar.SECOND) >= 30) {
+                break;
+            }
+        }
+
+        //8点29分30秒时间触发
+        while (policy == 3) {
+            sleep(1000);
+            if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) == 8 &&
+                    Calendar.getInstance().get(Calendar.MINUTE) == 29 &&
+                    Calendar.getInstance().get(Calendar.SECOND) >= 30) {
+                break;
+            }
+        }
+
+        //保护线程 2分钟未下单自动终止 避免对叮咚服务器造成压力 也避免封号  如果想长时间执行 请使用Sentinel哨兵模式
+        new Thread(() -> {
+            for (int i = 0; i < 120 && !Api.context.containsKey("end"); i++) {
+                sleep(1000);
+            }
+            if (!Api.context.containsKey("end")) {
+                Api.context.put("end", new HashMap<>());
+                sleep(3000);
+                System.err.println("未成功下单，执行2分钟自动停止");
+            }
+        }).start();
+
+
+        //此为高峰期策略 通过同时获取或更新 购物车、配送、订单确认信息再进行高并发提交订单
         //一定要注意 并发量过高会导致被风控 请合理设置线程数、等待时间和执行时间 不要长时间的执行此程序（我配置的线程数和间隔 2分钟以内）
         //如果想等过高峰期后进行简陋 长时间执行 则将线程数改为1  间隔时间改为10秒以上 并发越小越像真人 不会被风控  要更真一点就用随机数（自己处理）
-        
+
         //基础信息执行线程数
         int baseTheadSize = 2;
 
         //提交订单执行线程数
-        int submitOrderTheadSize = 4;
+        int submitOrderTheadSize = 6;
 
-        //请求间隔时间
-        int sleepMillis = 300;
+        //取随机数
+        //请求间隔时间最小值
+        int sleepMillisMin = 300;
+        //请求间隔时间最大值
+        int sleepMillisMax = 500;
 
         for (int i = 0; i < baseTheadSize; i++) {
             new Thread(() -> {
-                while (!map.containsKey("end")) {
+                while (!Api.context.containsKey("end")) {
                     Api.allCheck();
                     //此接口作为补充使用 并不是一定需要 所以执行间隔拉大一点
-                    sleep(5000);
+                    sleep(RandomUtil.randomInt(3000, 5000));
                 }
             }).start();
         }
 
         for (int i = 0; i < baseTheadSize; i++) {
             new Thread(() -> {
-                while (!map.containsKey("end")) {
-                    Map<String, Object> cartMap = Api.getCart();
+                while (!Api.context.containsKey("end")) {
+                    Map<String, Object> cartMap = Api.getCart(false);
                     if (cartMap != null) {
-                        map.put("cartMap", cartMap);
+                        Api.context.put("cartMap", cartMap);
                     }
-                    sleep(sleepMillis);
+                    sleep(RandomUtil.randomInt(sleepMillisMin, sleepMillisMax));
                 }
             }).start();
         }
         for (int i = 0; i < baseTheadSize; i++) {
             new Thread(() -> {
-                while (!map.containsKey("end")) {
-                    sleep(sleepMillis);
-                    if (map.get("cartMap") == null) {
+                while (!Api.context.containsKey("end")) {
+                    sleep(RandomUtil.randomInt(sleepMillisMin, sleepMillisMax));
+                    if (Api.context.get("cartMap") == null) {
                         continue;
                     }
-                    Map<String, Object> multiReserveTimeMap = Api.getMultiReserveTime(UserConfig.addressId, map.get("cartMap"));
+                    Map<String, Object> multiReserveTimeMap = Api.getMultiReserveTime(UserConfig.addressId, Api.context.get("cartMap"));
                     if (multiReserveTimeMap != null) {
-                        map.put("multiReserveTimeMap", multiReserveTimeMap);
+                        Api.context.put("multiReserveTimeMap", multiReserveTimeMap);
                     }
                 }
             }).start();
         }
         for (int i = 0; i < baseTheadSize; i++) {
             new Thread(() -> {
-                while (!map.containsKey("end")) {
-                    sleep(sleepMillis);
-                    if (map.get("cartMap") == null || map.get("multiReserveTimeMap") == null) {
+                while (!Api.context.containsKey("end")) {
+                    sleep(RandomUtil.randomInt(sleepMillisMin, sleepMillisMax));
+                    if (Api.context.get("cartMap") == null || Api.context.get("multiReserveTimeMap") == null) {
                         continue;
                     }
-                    Map<String, Object> checkOrderMap = Api.getCheckOrder(UserConfig.addressId, map.get("cartMap"), map.get("multiReserveTimeMap"));
+                    Map<String, Object> checkOrderMap = Api.getCheckOrder(UserConfig.addressId, Api.context.get("cartMap"), Api.context.get("multiReserveTimeMap"));
                     if (checkOrderMap != null) {
-                        map.put("checkOrderMap", checkOrderMap);
+                        Api.context.put("checkOrderMap", checkOrderMap);
                     }
                 }
             }).start();
         }
         for (int i = 0; i < submitOrderTheadSize; i++) {
             new Thread(() -> {
-                while (!map.containsKey("end")) {
-                    if (map.get("cartMap") == null || map.get("multiReserveTimeMap") == null || map.get("checkOrderMap") == null) {
-                        sleep(sleepMillis);
+                while (!Api.context.containsKey("end")) {
+                    sleep(RandomUtil.randomInt(sleepMillisMin, sleepMillisMax));
+                    if (Api.context.get("cartMap") == null || Api.context.get("multiReserveTimeMap") == null || Api.context.get("checkOrderMap") == null) {
                         continue;
                     }
-                    Api.addNewOrder(UserConfig.addressId, map.get("cartMap"), map.get("multiReserveTimeMap"), map.get("checkOrderMap"));
+                    if (Api.addNewOrder(UserConfig.addressId, Api.context.get("cartMap"), Api.context.get("multiReserveTimeMap"), Api.context.get("checkOrderMap"))) {
+                        System.out.println("铃声持续1分钟，终止程序即可，如果还需要下单再继续运行程序");
+                        Api.play();
+                    }
                 }
             }).start();
         }
