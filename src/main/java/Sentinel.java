@@ -32,11 +32,16 @@ public class Sentinel {
                     sleep(RandomUtil.randomInt(sleepMillisMin, sleepMillisMax));
                 }
                 Api.allCheck();
-                sleep(RandomUtil.randomInt(500, 2000));
-                Map<String, Object> cartMap = Api.getCart(true);
+
+                Map<String, Object> cartMap = null;
+                for (int i = 0; i < 3 && cartMap == null; i++) {
+                    sleep(RandomUtil.randomInt(500, 2000));
+                    cartMap = Api.getCart(true);
+                }
                 if (cartMap == null) {
                     continue;
                 }
+
                 if (Double.parseDouble(cartMap.get("total_money").toString()) < minOrderPrice) {
                     System.err.println("订单金额：" + cartMap.get("total_money").toString() + " 不满足最小金额设置：" + minOrderPrice + " 等待重试");
                     continue;
