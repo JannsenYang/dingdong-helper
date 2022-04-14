@@ -32,13 +32,13 @@ public class UserConfig {
         headers.put("ddmc-channel", "applet");
         headers.put("ddmc-os-version", "[object Undefined]");
         headers.put("ddmc-app-client-id", "4");
-        headers.put("cookie", "");
+        headers.put("cookie", "");//用户是否登录关键信息 请仔细检查
         headers.put("ddmc-ip", "");
         headers.put("ddmc-longitude", "");
         headers.put("ddmc-latitude", "");
         headers.put("ddmc-api-version", "");
         headers.put("ddmc-uid", "");
-        headers.put("user-agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 15_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.18(0x1800123c) NetType/WIFI Language/zh_CN");
+        headers.put("user-agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 15_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.18(0x1800123c) NetType/WIFI Language/zh_CN");//有反馈说PC端小程序的UserAgent不能下单 如果是PC端抓包直接使用此Agent即可
         headers.put("referer", "https://servicewechat.com/wx1e113254eda17715/422/page-frame.html");
         return headers;
     }
@@ -63,7 +63,7 @@ public class UserConfig {
         body.put("sharer_uid", "");
         body.put("openid", "");
         body.put("h5_source", "");
-        body.put("device_token", "");
+        body.put("device_token", "");//用户是否登录关键信息 请仔细检查
         return body;
     }
 
