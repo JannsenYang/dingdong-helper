@@ -60,7 +60,8 @@ public class Api {
         Boolean success = object.getBool("success");
         if (success == null) {
             if ("405".equals(object.getStr("code"))) {
-                print(false, actionName + "失败:" + "出现此问题有三个可能 1.偶发，无需处理 2.一个账号一天只能下两单  3.不要长时间运行程序，目前已知有人被风控了，暂时未确认风控的因素是ip还是用户或设备相关信息，如果要测试用单次执行模式，并发只能用于6点、8点半的前一分钟，然后执行时间不能超过2分钟，如果买不到就不要再执行程序了，切忌切忌，如果已经被风控的可以尝试过一段时间再试，或者换号");
+                print(false, actionName + "失败:" + "出现此问题有三个可能 1.偶发，无需处理 2.一个账号一天只能下两单  3.不要长时间运行程序，目前已知有人被风控了，暂时未确认风控的因素是ip还是用户或设备相关信息，如果要测试用单次执行模式，并发只能用于6点、8点半的前一分钟，然后执行时间不能超过2分钟，如果买不到就不要再执行程序了，切忌切忌");
+                print(false,"405问题解决方案，不保证完全有效,退出App账号重新登录，尝试刷新购物车和提交订单是否正常，如果正常退出小程序重新登录后再抓包，替换UserConfig中的cookie和device_token。");
             } else {
                 print(false, actionName + "失败,服务器返回无法解析的内容:" + JSONUtil.toJsonStr(object));
             }
