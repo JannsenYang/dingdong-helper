@@ -22,9 +22,12 @@ public class Sentinel {
         int sleepMillisMin = 30000;
         //执行任务请求间隔时间最大值
         int sleepMillisMax = 60000;
-        
+
         //单轮轮询时请求异常（叮咚服务器高峰期限流策略）尝试次数
         int loopTryCount = 10;
+
+        //60次以后长时间等待10-15分钟左右
+        int longWaitCount = 0;
 
         boolean first = true;
         while (!Api.context.containsKey("end")) {
@@ -32,7 +35,13 @@ public class Sentinel {
                 if (first) {
                     first = false;
                 } else {
-                    sleep(RandomUtil.randomInt(sleepMillisMin, sleepMillisMax));
+                    if (longWaitCount++ > 60) {
+                        longWaitCount = 0;
+                        System.out.println("执行60次循环后，休息10-15分钟左右再继续");
+                        sleep(RandomUtil.randomInt(60000, 80000));
+                    } else {
+                        sleep(RandomUtil.randomInt(sleepMillisMin, sleepMillisMax));
+                    }
                 }
                 Api.allCheck();
 
