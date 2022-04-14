@@ -103,8 +103,8 @@
 ## 抓包截图 将你的信息填入
 
 这个图有时候会挂，直接从项目里面看也一样，就是路径image/headers.jpeg 和 body.jpeg  对应到UserConfig中的headers和body方法里的参数
-![请求头信息](https://github.com/JannsenYang/dingdong-helper/blob/8a16a972185cd4e560c24b57137dcd90b929efcb/image/headers.jpg)
-![请求体信息](https://github.com/JannsenYang/dingdong-helper/blob/8a16a972185cd4e560c24b57137dcd90b929efcb/image/body.jpg)
+![请求头信息](https://github.com/JannsenYang/dingdong-helper/blob/0433cc7def733820d734f48dec6e47fc0f2d89c8/image/headers.jpg)
+![请求体信息](https://github.com/JannsenYang/dingdong-helper/blob/0433cc7def733820d734f48dec6e47fc0f2d89c8/image/body.jpg)
 
 ## 20220410实战记录
 
