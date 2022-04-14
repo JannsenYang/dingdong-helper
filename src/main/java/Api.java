@@ -4,11 +4,11 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.google.common.collect.ImmutableMap;
-import lombok.SneakyThrows;
 
 import java.applet.Applet;
 import java.applet.AudioClip;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,12 +23,16 @@ public class Api {
     /**
      * 时间触发模式和哨兵模式播放音效提醒 请将电脑声音开到合适音量
      */
-    @SneakyThrows
+//    @SneakyThrows 不少人没有安装lombok插件 还是用传统的try catch吧
     public static void play() {
-        //这里还可以使用企业微信或者钉钉的提供的webhook  自己写代码 很简单 就是按对应数据格式发一个请求到企业微信或者钉钉
-        AudioClip audioClip = Applet.newAudioClip(new File("ding-dong.wav").toURL());
-        audioClip.loop();
-        Thread.sleep(60000);//响铃60秒
+        try {
+            //这里还可以使用企业微信或者钉钉的提供的webhook  自己写代码 很简单 就是按对应数据格式发一个请求到企业微信或者钉钉
+            AudioClip audioClip = Applet.newAudioClip(new File("ding-dong.wav").toURL());
+            audioClip.loop();
+            Thread.sleep(60000);//响铃60秒
+        } catch (InterruptedException | MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
