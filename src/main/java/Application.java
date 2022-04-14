@@ -48,7 +48,7 @@ public class Application {
         int baseTheadSize = 2;
 
         //提交订单执行线程数
-        int submitOrderTheadSize = 6;
+        int submitOrderTheadSize = 4;
 
         //取随机数
         //请求间隔时间最小值
@@ -58,12 +58,13 @@ public class Application {
 
 
         //5点59分30秒时间触发
-        while (policy == 2 && !timeTrigger(5, 59, 30)) {
+        while (policy == 2 && !timeTrigger(5, 59, 20)) {
         }
 
         //8点29分30秒时间触发
         while (policy == 3 && !timeTrigger(8, 29, 30)) {
         }
+
 
         //保护线程 2分钟未下单自动终止 避免对叮咚服务器造成压力 也避免封号  如果想长时间执行 请使用Sentinel哨兵模式
         new Thread(() -> {
@@ -90,7 +91,7 @@ public class Application {
         for (int i = 0; i < baseTheadSize; i++) {
             new Thread(() -> {
                 while (!Api.context.containsKey("end")) {
-                    Map<String, Object> cartMap = Api.getCart(false);
+                    Map<String, Object> cartMap = Api.getCart(policy == 2 || policy == 3);
                     if (cartMap != null) {
                         if (Double.parseDouble(cartMap.get("total_money").toString()) < minOrderPrice) {
                             System.err.println("订单金额：" + cartMap.get("total_money").toString() + " 不满足最小金额设置：" + minOrderPrice + " 继续重试");
@@ -133,7 +134,6 @@ public class Application {
         for (int i = 0; i < submitOrderTheadSize; i++) {
             new Thread(() -> {
                 while (!Api.context.containsKey("end")) {
-                    sleep(RandomUtil.randomInt(sleepMillisMin, sleepMillisMax));
                     if (Api.context.get("cartMap") == null || Api.context.get("multiReserveTimeMap") == null || Api.context.get("checkOrderMap") == null) {
                         continue;
                     }
