@@ -34,8 +34,8 @@
 1. intellij idea 新手教学：下载路径 https://www.jetbrains.com/idea/download/#section=windows 下载好使用30天试用版即可 祈祷30天内能回归正常生活
 2. jdk 8 新手教学：下载路径 https://www.oracle.com/java/technologies/downloads/#java8-windows   搜索Java SE Development Kit 8u321找到合适你系统和cpu的版本 一键安装
 3. maven 新手教学：可用idea内置maven 什么都不用操作
-
-打开idea - (file 如果是第一次安装跳过此项直接能看到open) - open - 项目文件夹 - 等待右下角maven构建进度条
+4. 打开idea - (file 如果是第一次安装跳过此项直接能看到open) - open - 项目文件夹 - 等待右下角maven构建进度条
+5. 新手不要自己新建一个项目在往项目里加文件 直接使用方式4 等待进度条结束即可 如果不小心叉掉了进度条，删掉项目，重新拉，重复步骤4（有其他方法，但新手很难理解就不推荐了）
 
 对java完全不熟悉的来个快速入门
 
