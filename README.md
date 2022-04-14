@@ -26,7 +26,7 @@
 ## 步骤
 
 1. 通过Charles（我截图和教程是Charles，用Charles会更方便对比）等抓包工具抓取微信中叮咚买菜小程序中的接口信息中的用户信息配置到UserConfig.java中，比如openId、userId，详情见下截图，此操作每个用户只需要做一次。注意事项：其中有一个参数叫station_id，headers和body中都有，一定要确认抓包时你的站点信息设置是对的（非常重要 非常重要 非常重要），进入小程序后左上角确认站点信息后再抓包
-2. 运行UserConfig.java获取addressId填入addressId变量并确认站点信息是否正确
+2. 运行UserConfig.java获取addressId填入addressId变量并确认站点信息是否正确，如果执行显示用户过期则检查参数少配或配错，重点关注headers中ddmc-device-id、cookie、ddmc-uid ，body中uid、open_id、device_token
 3. 将需要买的菜自行通过APP放入购物车
 4. 5-8执行模式根据使用需求自选
 5. 测试模式（单线程）: 执行ApplicationTest低峰期单次下单
