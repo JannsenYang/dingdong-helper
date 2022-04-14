@@ -29,11 +29,24 @@
 9. 有反馈说用PC端小程序的UserAgent无法下单，如果你是用PC端小程序抓包不要覆盖UserConfig中的UserAgent
 
 ## 环境
-1. intellij idea
-2. jdk 8
-3. maven(可用idea内置maven)
+非Java开发很多 加一点新手教学 老手直接忽略
 
-使用idea - file - open - 项目文件夹 - 等待右下角maven构建进度条
+1. intellij idea 新手教学：下载路径 https://www.jetbrains.com/idea/download/#section=windows 下载好使用30天试用版即可 祈祷30天内能回归正常生活
+2. jdk 8 新手教学：下载路径 https://www.oracle.com/java/technologies/downloads/#java8-windows   搜索Java SE Development Kit 8u321找到合适你系统和cpu的版本 一键安装
+3. maven 新手教学：可用idea内置maven 什么都不用操作
+
+打开idea - (file 如果是第一次安装跳过此项直接能看到open) - open - 项目文件夹 - 等待右下角maven构建进度条
+
+对java完全不熟悉的来个快速入门
+
+``` java
+public class UserConfig { //UserConfig是类名 下面文档中说的执行Application就是类名
+  //一个类只能有一个main方法 也就是启动方法 在idea中右键此文件Run就是执行这个类  如果该类中没有main方法则没有Run这个选项 项目中的Api类就没有main方法
+  public static void main(String[] args) {
+  }
+}
+
+```
 
 ## 步骤
 
