@@ -16,7 +16,7 @@ public class Sentinel {
 
     public static void main(String[] args) {
         //最小订单成交金额 举例如果设置成50 那么订单要超过50才会下单
-        double minOrderPrice = 50;
+        double minOrderPrice = 0;
 
         //执行任务请求间隔时间最小值
         int sleepMillisMin = 30000;
