@@ -16,12 +16,15 @@ public class Sentinel {
 
     public static void main(String[] args) {
         //最小订单成交金额 举例如果设置成50 那么订单要超过50才会下单
-        double minOrderPrice = 0;
+        double minOrderPrice = 50;
 
         //执行任务请求间隔时间最小值
         int sleepMillisMin = 30000;
         //执行任务请求间隔时间最大值
         int sleepMillisMax = 60000;
+        
+        //单轮轮询时请求异常（叮咚服务器高峰期限流策略）尝试次数
+        int loopTryCount = 10;
 
         boolean first = true;
         while (!Api.context.containsKey("end")) {
@@ -34,7 +37,7 @@ public class Sentinel {
                 Api.allCheck();
 
                 Map<String, Object> cartMap = null;
-                for (int i = 0; i < 3 && cartMap == null; i++) {
+                for (int i = 0; i < loopTryCount && cartMap == null; i++) {
                     sleep(RandomUtil.randomInt(500, 2000));
                     cartMap = Api.getCart(true);
                 }
@@ -48,7 +51,7 @@ public class Sentinel {
                 }
 
                 Map<String, Object> multiReserveTimeMap = null;
-                for (int i = 0; i < 3 && multiReserveTimeMap == null; i++) {
+                for (int i = 0; i < loopTryCount && multiReserveTimeMap == null; i++) {
                     sleep(RandomUtil.randomInt(500, 2000));
                     multiReserveTimeMap = Api.getMultiReserveTime(UserConfig.addressId, cartMap);
                 }
@@ -57,7 +60,7 @@ public class Sentinel {
                 }
 
                 Map<String, Object> checkOrderMap = null;
-                for (int i = 0; i < 3 && checkOrderMap == null; i++) {
+                for (int i = 0; i < loopTryCount && checkOrderMap == null; i++) {
                     sleep(RandomUtil.randomInt(500, 2000));
                     checkOrderMap = Api.getCheckOrder(UserConfig.addressId, cartMap, multiReserveTimeMap);
                 }
@@ -65,7 +68,7 @@ public class Sentinel {
                     continue;
                 }
 
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < loopTryCount; i++) {
                     sleep(RandomUtil.randomInt(500, 2000));
                     if (Api.addNewOrder(UserConfig.addressId, cartMap, multiReserveTimeMap, checkOrderMap)) {
                         System.out.println("铃声持续1分钟，终止程序即可，如果还需要下单再继续运行程序");
