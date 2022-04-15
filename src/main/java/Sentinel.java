@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 哨兵捡漏模式 可长时间运行
+ * 哨兵捡漏模式 可长时间运行 此模式不能用于高峰期下单
  */
 public class Sentinel {
 
@@ -16,6 +16,10 @@ public class Sentinel {
     }
 
     public static void main(String[] args) {
+        System.out.println("此模式模拟真人执行操作间隔不并发，不支持6点和8点30高峰期下单，如果需要在6点和8点30下单，请使用Application，设置policy = 2（6点）或 policy = 3(8点30)");
+        System.out.println("3秒后执行，请确认上述内容");
+        sleep(3000);
+        
         //最小订单成交金额 举例如果设置成50 那么订单要超过50才会下单
         double minOrderPrice = 0;
 
