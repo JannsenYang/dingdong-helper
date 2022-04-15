@@ -165,8 +165,12 @@ public class Api {
                     System.out.println("");
 
 
-                    if (!address.getStr("city_number").equals(UserConfig.cityId)) {
-                        System.err.println("城市id配置不正确，请填入UserConfig.cityId = " + stationInfo.getStr("city_number"));
+                    if (address.containsValue("city_number") ||  !address.getStr("city_number").equals(UserConfig.cityId)) {
+                        if(address.containsValue("city_number")){
+                            System.err.println("城市id配置不正确，请填入UserConfig.cityId = " + stationInfo.getStr("city_number"));
+                        }else{
+                            System.err.println("城市id未从接口中获取，请人工确认城市id是否正确，通过抓包可以看到请求体中有city_number字段，上海默认0101，不用改");
+                        }
                     } else {
                         System.out.println("城市id配置正确");
                     }
