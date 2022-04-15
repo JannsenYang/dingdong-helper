@@ -35,6 +35,9 @@ public class Api {
      * @param body
      */
     private static Map sign(Map body) {
+        if (jdk8Warning) {
+            return body;
+        }
         try {
             if (invocable == null) {
                 ScriptEngineManager manager = new ScriptEngineManager();
