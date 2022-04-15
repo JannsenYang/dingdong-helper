@@ -158,27 +158,27 @@ public class Api {
                 if (address.getBool("is_default")) {
                     JSONObject stationInfo = address.getJSONObject("station_info");
 
-                    System.out.println("请仔细核对站点和收货地址信息 站点信息配置错误将导致无法下单");
+                    System.out.println("获取默认收货地址成功 请仔细核对站点和收货地址信息 站点信息配置错误将导致无法下单");
                     System.out.println("1.该地址对应城市名称为：" + stationInfo.get("city_name"));
                     System.out.println("2.该地址对应站点名称为：" + stationInfo.get("name"));
-                    System.out.println("3.获取默认收货地址成功：" + address.getStr("addr_detail") + " 手机号：" + address.getStr("mobile"));
+                    System.out.println("3.该地址详细信息：" + address.getStr("addr_detail") + " 手机号：" + address.getStr("mobile"));
                     System.out.println("");
 
 
                     if (!address.getStr("city_number").equals(UserConfig.cityId)) {
-                        System.err.println("城市Id配置不正确，请填入UserConfig.cityId = " + stationInfo.getStr("city_number"));
+                        System.err.println("城市id配置不正确，请填入UserConfig.cityId = " + stationInfo.getStr("city_number"));
                     } else {
-                        System.out.println("城市ID配置正确");
+                        System.out.println("城市id配置正确");
                     }
                     if (!stationInfo.getStr("id").equals(UserConfig.stationId)) {
-                        System.err.println("站点Id配置不正确，请填入UserConfig.stationId = " + stationInfo.getStr("id"));
+                        System.err.println("站点id配置不正确，请填入UserConfig.stationId = " + stationInfo.getStr("id"));
                     } else {
-                        System.out.println("站点Id配置正确");
+                        System.out.println("站点id配置正确");
                     }
                     if (!address.getStr("id").equals(UserConfig.addressId)) {
-                        System.err.println("地址Id配置不正确，请填入UserConfig.addressId = " + address.getStr("id"));
+                        System.err.println("地址id配置不正确，请填入UserConfig.addressId = " + address.getStr("id"));
                     } else {
-                        System.out.println("地址Id配置正确");
+                        System.out.println("地址id配置正确");
                     }
                     return;
                 }
