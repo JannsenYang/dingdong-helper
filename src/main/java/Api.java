@@ -1,3 +1,4 @@
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
@@ -5,6 +6,10 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.google.common.collect.ImmutableMap;
 
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.applet.Applet;
 import java.applet.AudioClip;
 import java.io.File;
@@ -19,6 +24,35 @@ public class Api {
 
     public static final Map<String, Map<String, Object>> context = new ConcurrentHashMap<>();
 
+
+    private static Invocable invocable;
+
+    /**
+     * 签名
+     *
+     * @param body
+     */
+    private static Map sign(Map body) {
+        try {
+            if (invocable == null) {
+                ScriptEngineManager manager = new ScriptEngineManager();
+                ScriptEngine engine = manager.getEngineByName("js");
+                try {
+                    engine.eval(FileUtil.readString(new File("sign.js"), "UTF-8"));
+                } catch (ScriptException ex) {
+                    ex.printStackTrace();
+                }
+                invocable = (Invocable) engine;
+            }
+            Object object = invocable.invokeFunction("sign", JSONUtil.toJsonStr(body));
+            Map signMap = JSONUtil.toBean(object.toString(), Map.class);
+            body.put("nars", signMap.get("nars"));
+            body.put("sesi", signMap.get("sesi"));
+        } catch (ScriptException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return body;
+    }
 
     /**
      * 时间触发模式和哨兵模式播放音效提醒 请将电脑声音开到合适音量
@@ -65,7 +99,7 @@ public class Api {
         if (success == null) {
             if ("405".equals(object.getStr("code"))) {
                 print(false, actionName + "失败:" + "出现此问题有三个可能 1.偶发，无需处理 2.一个账号一天只能下两单  3.不要长时间运行程序，目前已知有人被风控了，暂时未确认风控的因素是ip还是用户或设备相关信息，如果要测试用单次执行模式，并发只能用于6点、8点半的前一分钟，然后执行时间不能超过2分钟，如果买不到就不要再执行程序了，切忌切忌");
-                print(false,"405问题解决方案，不保证完全有效,退出App账号重新登录，尝试刷新购物车和提交订单是否正常，如果正常退出小程序重新登录后再抓包，替换UserConfig中的cookie和device_token。");
+                print(false, "405问题解决方案，不保证完全有效,退出App账号重新登录，尝试刷新购物车和提交订单是否正常，如果正常退出小程序重新登录后再抓包，替换UserConfig中的cookie和device_token。");
             } else {
                 print(false, actionName + "失败,服务器返回无法解析的内容:" + JSONUtil.toJsonStr(object));
             }
@@ -94,58 +128,57 @@ public class Api {
 
 
     /**
-     * 获取有效的默认收货地址id
-     *
-     * @return 收货地址id
+     * 检查用户信息
      */
-    public static String getAddressId() {
-        boolean noAddress = false;
+    public static void checkUserConfig() {
         try {
             System.out.println("开始获取收货人信息");
             HttpRequest httpRequest = HttpUtil.createGet("https://sunquan.api.ddxq.mobi/api/v1/user/address/");
-            httpRequest.addHeaders(UserConfig.getHeaders());
-            httpRequest.formStr(UserConfig.getBody());
+            Map<String, String> headers = UserConfig.getHeaders();
+            httpRequest.addHeaders(headers);
+            httpRequest.formStr(sign(UserConfig.getBody(headers)));
 
             String body = httpRequest.execute().body();
             JSONObject object = JSONUtil.parseObj(body);
             if (!isSuccess(object, "获取默认收货地址")) {
-                return null;
+                return;
             }
             JSONArray validAddress = object.getJSONObject("data").getJSONArray("valid_address");
             System.out.println("获取可用的收货地址条数：" + validAddress.size());
             for (int i = 0; i < validAddress.size(); i++) {
                 JSONObject address = validAddress.getJSONObject(i);
                 if (address.getBool("is_default")) {
+                    JSONObject stationInfo = address.getJSONObject("station_info");
+
                     System.out.println("请仔细核对站点和收货地址信息 站点信息配置错误将导致无法下单");
-                    System.out.println("1.获取默认收货地址成功：" + address.getStr("addr_detail") + " 手机号：" + address.getStr("mobile"));
-                    System.out.println("2.该地址对应站点名称为：" + address.getJSONObject("station_info").get("name"));
-                    System.out.println("3.确认站点id是否和UserInfo headers中ddmc-station-id还有body中station_id一致 如果不一致则修改为输出的这个station id：" + address.getJSONObject("station_info").get("id"));
-                    System.out.println("正在执行代码校验station id是否准确");
-                    String stationId = address.getJSONObject("station_info").getStr("id");
-                    boolean stationsIdSuccess = true;
-                    if (!UserConfig.getHeaders().get("ddmc-station-id").equals(stationId)) {
-                        System.err.println("headers中ddmc-station-id不匹配当前收货地址站点id");
-                        stationsIdSuccess = false;
+                    System.out.println("1.该地址对应城市名称为：" + stationInfo.get("city_name"));
+                    System.out.println("2.该地址对应站点名称为：" + stationInfo.get("name"));
+                    System.out.println("3.获取默认收货地址成功：" + address.getStr("addr_detail") + " 手机号：" + address.getStr("mobile"));
+                    System.out.println("");
+
+
+                    if (!address.getStr("city_number").equals(UserConfig.cityId)) {
+                        System.err.println("城市Id配置不正确，请填入UserConfig.cityId = " + stationInfo.getStr("city_number"));
+                    } else {
+                        System.out.println("城市ID配置正确");
                     }
-                    if (!UserConfig.getBody().get("station_id").equals(stationId)) {
-                        System.err.println("body中station_id不匹配当前收货地址站点id");
-                        stationsIdSuccess = false;
+                    if (!stationInfo.getStr("id").equals(UserConfig.stationId)) {
+                        System.err.println("站点Id配置不正确，请填入UserConfig.stationId = " + stationInfo.getStr("id"));
+                    } else {
+                        System.out.println("站点Id配置正确");
                     }
-                    if (stationsIdSuccess) {
-                        System.out.println("站点id配置正常");
+                    if (!address.getStr("id").equals(UserConfig.addressId)) {
+                        System.err.println("地址Id配置不正确，请填入UserConfig.addressId = " + address.getStr("id"));
+                    } else {
+                        System.out.println("地址Id配置正确");
                     }
-                    return address.getStr("id");
+                    return;
                 }
             }
-            noAddress = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (noAddress) {
-            System.err.println("没有可用的默认收货地址，请自行登录叮咚设置该站点可用的默认收货地址");
-            context.put("end", new HashMap<>());
-        }
-        return null;
+        System.err.println("没有可用的默认收货地址，请自行登录叮咚设置该站点可用的默认收货地址");
     }
 
 
@@ -155,10 +188,11 @@ public class Api {
     public static void allCheck() {
         try {
             HttpRequest httpRequest = HttpUtil.createGet("https://maicai.api.ddxq.mobi/cart/allCheck");
-            httpRequest.addHeaders(UserConfig.getHeaders());
-            Map<String, String> request = UserConfig.getBody();
+            Map<String, String> headers = UserConfig.getHeaders();
+            httpRequest.addHeaders(headers);
+            Map<String, String> request = UserConfig.getBody(headers);
             request.put("is_check", "1");
-            httpRequest.formStr(request);
+            httpRequest.formStr(sign(request));
 
             String body = httpRequest.execute().body();
             JSONObject object = JSONUtil.parseObj(body);
@@ -181,10 +215,14 @@ public class Api {
     public static Map<String, Object> getCart(boolean noProductsContinue) {
         try {
             HttpRequest httpRequest = HttpUtil.createGet("https://maicai.api.ddxq.mobi/cart/index");
-            httpRequest.addHeaders(UserConfig.getHeaders());
-            Map<String, String> request = UserConfig.getBody();
+            Map<String, String> headers = UserConfig.getHeaders();
+            httpRequest.addHeaders(headers);
+            Map<String, String> request = UserConfig.getBody(headers);
             request.put("is_load", "1");
-            httpRequest.formStr(request);
+            request.put("ab_config", "{\"key_onion\":\"D\",\"key_cart_discount_price\":\"C\"}");
+
+
+            httpRequest.formStr(sign(request));
 
             String body = httpRequest.execute().body();
             JSONObject object = JSONUtil.parseObj(body);
@@ -257,13 +295,14 @@ public class Api {
     public static Map<String, Object> getMultiReserveTime(String addressId, Map<String, Object> cartMap) {
         try {
             HttpRequest httpRequest = HttpUtil.createPost("https://maicai.api.ddxq.mobi/order/getMultiReserveTime");
-            httpRequest.addHeaders(UserConfig.getHeaders());
-            Map<String, Object> request = UserConfig.getBody();
+            Map<String, String> headers = UserConfig.getHeaders();
+            httpRequest.addHeaders(headers);
+            Map<String, Object> request = UserConfig.getBody(headers);
             request.put("address_id", addressId);
             request.put("products", "[" + JSONUtil.toJsonStr(cartMap.get("products")) + "]");
             request.put("group_config_id", "");
             request.put("isBridge", "false");
-            httpRequest.form(request);
+            httpRequest.form(sign(request));
             String body = httpRequest.execute().body();
             JSONObject object = JSONUtil.parseObj(body);
             if (!isSuccess(object, "更新配送时间")) {
@@ -301,8 +340,9 @@ public class Api {
     public static Map<String, Object> getCheckOrder(String addressId, Map<String, Object> cartMap, Map<String, Object> multiReserveTimeMap) {
         try {
             HttpRequest httpRequest = HttpUtil.createPost("https://maicai.api.ddxq.mobi/order/checkOrder");
-            httpRequest.addHeaders(UserConfig.getHeaders());
-            Map<String, Object> request = UserConfig.getBody();
+            Map<String, String> headers = UserConfig.getHeaders();
+            httpRequest.addHeaders(headers);
+            Map<String, Object> request = UserConfig.getBody(headers);
             request.put("address_id", addressId);
             request.put("user_ticket_id", "default");
             request.put("freight_ticket_id", "default");
@@ -349,7 +389,7 @@ public class Api {
             ));
             packages.add(packagesMap);
             request.put("packages", JSONUtil.toJsonStr(packages));
-            httpRequest.form(request);
+            httpRequest.form(sign(request));
 
             String body = httpRequest.execute().body();
             JSONObject object = JSONUtil.parseObj(body);
@@ -385,8 +425,9 @@ public class Api {
     public static boolean addNewOrder(String addressId, Map<String, Object> cartMap, Map<String, Object> multiReserveTimeMap, Map<String, Object> checkOrderMap) {
         try {
             HttpRequest httpRequest = HttpUtil.createPost("https://maicai.api.ddxq.mobi/order/addNewOrder");
-            httpRequest.addHeaders(UserConfig.getHeaders());
-            Map<String, Object> request = UserConfig.getBody();
+            Map<String, String> headers = UserConfig.getHeaders();
+            httpRequest.addHeaders(headers);
+            Map<String, Object> request = UserConfig.getBody(headers);
             request.put("showMsg", "false");
             request.put("showData", "true");
             request.put("ab_config", "{\"key_onion\":\"C\"}");
@@ -446,7 +487,7 @@ public class Api {
             packagesMap.put("receipt_without_sku", 0);
             request.put("package_order", JSONUtil.toJsonStr(packageOrderMap));
 
-            httpRequest.form(request);
+            httpRequest.form(sign(request));
             String body = httpRequest.execute().body();
             JSONObject object = JSONUtil.parseObj(body);
 
