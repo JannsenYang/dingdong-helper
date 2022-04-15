@@ -27,6 +27,8 @@ public class Api {
 
     private static Invocable invocable;
 
+    private static boolean jdk8Warning = false;
+
     /**
      * 签名
      *
@@ -36,10 +38,13 @@ public class Api {
         try {
             if (invocable == null) {
                 ScriptEngineManager manager = new ScriptEngineManager();
-                ScriptEngine engine = manager.getEngineByName("js");
+                ScriptEngine engine = manager.getEngineByExtension("js");
                 if (engine == null) {
-                    manager = new ScriptEngineManager(null);
-                    engine = manager.getEngineByName("JavaScript");
+                    if (!jdk8Warning) {
+                        System.err.println("请使用jdk1.8版本，高版本不支持请求中的签名参数，不影响功能，只是参数中不带签名");
+                        jdk8Warning = true;
+                    }
+                    return body;
                 }
                 engine.eval(FileUtil.readString(new File("sign.js"), "UTF-8"));
                 invocable = (Invocable) engine;
