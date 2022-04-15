@@ -70,6 +70,7 @@ public class UserConfig { //UserConfig是类名 下面文档中说的执行Appli
 9. 等待程序结束，如果成功下单请在5分钟内付款，否则订单会取消，用手机打开叮咚买菜app-我的订单-待支付-点击支付
 10. 每次抢之前跑一下UserConfig中的main方法确认登录状态是否准确，如果状态不对则重新抓包更新UserConfig数据
 11. 如果想用自己的号帮别人下单，只需要手动在APP中设置一下默认地址再运行UserConfig 获取到addressId和stationId进行替换
+12. 如果想测试下单，上海是比较难测试的，可以把默认地址选择杭州进行测试
 
 ## 程序自动结束的几个条件
 
