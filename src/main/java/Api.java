@@ -37,11 +37,11 @@ public class Api {
             if (invocable == null) {
                 ScriptEngineManager manager = new ScriptEngineManager();
                 ScriptEngine engine = manager.getEngineByName("js");
-                try {
-                    engine.eval(FileUtil.readString(new File("sign.js"), "UTF-8"));
-                } catch (ScriptException ex) {
-                    ex.printStackTrace();
+                if (engine == null) {
+                    manager = new ScriptEngineManager(null);
+                    engine = manager.getEngineByName("JavaScript");
                 }
+                engine.eval(FileUtil.readString(new File("sign.js"), "UTF-8"));
                 invocable = (Invocable) engine;
             }
             Object object = invocable.invokeFunction("sign", JSONUtil.toJsonStr(body));
