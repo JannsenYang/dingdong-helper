@@ -1,5 +1,7 @@
 import org.apache.commons.cli.*;
 
+import java.io.Reader;
+
 /**
  * @author SoundOfAutumn
  * @date 2022/4/16 10:18
@@ -13,18 +15,22 @@ public class Main {
     public static final String desc4 = "提交订单执行线程数";
     public static final String desc5 = "请求间隔时间最小值";
     public static final String desc6 = "请求间隔时间最大值";
+    public static final String desc7 = "单轮轮询时请求异常（叮咚服务器高峰期限流策略）尝试次数";
 
     public static void main(String[] args) {
+        //命令行参数解析
         Options options = new Options();
         options.addOption("p", "policy", true, desc1);
         options.addOption("m", "minOrderPrice", true, desc2);
         options.addOption("b", "baseTheadSize", true, desc3);
-        options.addOption("s", "submitOrderTheadSize", true, desc4);
+        options.addOption("st", "submitOrderTheadSize", true, desc4);
         options.addOption("smin", "sleepMillisMin", true, desc5);
         options.addOption("smax", "sleepMillisMax", true, desc6);
+        options.addOption("l", "loopTryCount", true, desc7);
 
         options.addOption("t", "test", false, "测试是否能抢菜");
         options.addOption("v", "verify", false, "验证信息是否可用");
+        options.addOption("s", "sentinel", false, "哨兵模式");
 
         options.addOption("h", "help", false, "打印帮助信息");
 
@@ -52,6 +58,12 @@ public class Main {
             ApplicationTest.check();
             return;
         }
+        //哨兵模式
+        if (cli.hasOption("s")) {
+            new Sentinel(cli).run();
+            return;
+        }
+        //主程序
         new Application(cli).run();
     }
 

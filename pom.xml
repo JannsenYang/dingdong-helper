@@ -54,7 +54,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        Application
+                                        Main
                                     </mainClass>
                                 </manifest>
                             </archive>
@@ -71,6 +71,7 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>**/*.json</include>
+                    <include>**/*.js</include>
                 </includes>
             </resource>
         </resources>

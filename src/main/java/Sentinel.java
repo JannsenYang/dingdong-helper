@@ -1,12 +1,38 @@
 import cn.hutool.core.util.RandomUtil;
+import org.apache.commons.cli.CommandLine;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * 哨兵捡漏模式 可长时间运行 此模式不能用于高峰期下单
  */
 public class Sentinel {
+
+    //最小订单成交金额 举例如果设置成50 那么订单要超过50才会下单
+    private final double minOrderPrice;
+
+    //执行任务请求间隔时间最小值
+    private final int sleepMillisMin;
+
+    //执行任务请求间隔时间最大值
+    private final int sleepMillisMax;
+
+    //单轮轮询时请求异常（叮咚服务器高峰期限流策略）尝试次数
+    private final int loopTryCount;
+
+    public Sentinel(double minOrderPrice, int sleepMillisMin, int sleepMillisMax, int loopTryCount) {
+        this.minOrderPrice = minOrderPrice;
+        this.sleepMillisMin = sleepMillisMin;
+        this.sleepMillisMax = sleepMillisMax;
+        this.loopTryCount = loopTryCount;
+    }
+
+    public Sentinel(CommandLine cli) {
+        this.minOrderPrice = Double.parseDouble(cli.getOptionValue("m","0"));
+        this.sleepMillisMin = Integer.parseInt(cli.getOptionValue("smin","30000"));
+        this.sleepMillisMax = Integer.parseInt(cli.getOptionValue("smax","60000"));
+        this.loopTryCount = Integer.parseInt(cli.getOptionValue("l", "10"));
+    }
 
     private static void sleep(int millis) {
         try {
@@ -15,21 +41,10 @@ public class Sentinel {
         }
     }
 
-    public static void main(String[] args) {
+    public void run() {
         System.out.println("此模式模拟真人执行操作间隔不并发，不支持6点和8点30高峰期下单，如果需要在6点和8点30下单，请使用Application，设置policy = 2（6点）或 policy = 3(8点30)");
         System.out.println("3秒后执行，请确认上述内容");
         sleep(3000);
-        
-        //最小订单成交金额 举例如果设置成50 那么订单要超过50才会下单
-        double minOrderPrice = 0;
-
-        //执行任务请求间隔时间最小值
-        int sleepMillisMin = 30000;
-        //执行任务请求间隔时间最大值
-        int sleepMillisMax = 60000;
-
-        //单轮轮询时请求异常（叮咚服务器高峰期限流策略）尝试次数
-        int loopTryCount = 10;
 
         //60次以后长时间等待10分钟左右
         int longWaitCount = 0;

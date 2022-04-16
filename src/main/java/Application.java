@@ -32,7 +32,7 @@ public class Application {
         this.policy = Integer.parseInt(cli.getOptionValue("p", "1"));
         this.minOrderPrice = Double.parseDouble(cli.getOptionValue("m", "0"));
         this.baseTheadSize = Integer.parseInt(cli.getOptionValue("b","2"));
-        this.submitOrderTheadSize = Integer.parseInt(cli.getOptionValue("s","4"));
+        this.submitOrderTheadSize = Integer.parseInt(cli.getOptionValue("st","4"));
         this.sleepMillisMin = Integer.parseInt(cli.getOptionValue("smin","300"));
         this.sleepMillisMax = Integer.parseInt(cli.getOptionValue("smax","500"));
     }

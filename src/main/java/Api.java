@@ -1,11 +1,11 @@
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
-import cn.hutool.json.JSON;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.google.common.collect.ImmutableMap;
+import lombok.SneakyThrows;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -17,8 +17,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * 接口封装
