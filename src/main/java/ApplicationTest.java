@@ -6,6 +6,10 @@ import java.util.Map;
 public class ApplicationTest {
 
     public static void main(String[] args) {
+        ApplicationTest.check();
+    }
+
+    public static void check() {
         if (UserConfig.addressId.length() == 0) {
             System.err.println("请先执行UserConfig获取配送地址id");
             return;

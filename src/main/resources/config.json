@@ -1,0 +1,17 @@
+{
+  "headers": {
+    "ddmc-station-id": "",
+    "ddmc-address-id": "",
+    "ddmc-device-id": "",
+    "cookie": "",
+    "ddmc-longitude": ".",
+    "ddmc-latitude": ".",
+    "ddmc-uid": "",
+    "user-agent": ""
+ },
+  "body": {
+    "s_id": "",
+    "openid": "",
+    "device_token": ""
+  }
+ }

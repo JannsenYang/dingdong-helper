@@ -1,4 +1,5 @@
 import cn.hutool.core.util.RandomUtil;
+import org.apache.commons.cli.CommandLine;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -9,8 +10,60 @@ import java.util.Map;
  */
 public class Application {
 
+    public Application() {
+        policy = 1;//默认人工模式
+        minOrderPrice = 0;
+        baseTheadSize = 2;
+        submitOrderTheadSize = 4;
+        sleepMillisMin = 300;
+        sleepMillisMax = 500;
+    }
 
-    public static void sleep(int millis) {
+    public Application(int policy, double minOrderPrice, int baseTheadSize, int submitOrderTheadSize, int sleepMillisMin, int sleepMillisMax) {
+        this.policy = policy;
+        this.minOrderPrice = minOrderPrice;
+        this.baseTheadSize = baseTheadSize;
+        this.submitOrderTheadSize = submitOrderTheadSize;
+        this.sleepMillisMin = sleepMillisMin;
+        this.sleepMillisMax = sleepMillisMax;
+    }
+
+    public Application(CommandLine cli) {
+        this.policy = Integer.parseInt(cli.getOptionValue("p", "1"));
+        this.minOrderPrice = Double.parseDouble(cli.getOptionValue("m", "0"));
+        this.baseTheadSize = Integer.parseInt(cli.getOptionValue("b","2"));
+        this.submitOrderTheadSize = Integer.parseInt(cli.getOptionValue("s","4"));
+        this.sleepMillisMin = Integer.parseInt(cli.getOptionValue("smin","300"));
+        this.sleepMillisMax = Integer.parseInt(cli.getOptionValue("smax","500"));
+    }
+
+    //此为高峰期策略 通过同时获取或更新 购物车、配送、订单确认信息再进行高并发提交订单
+    //一定要注意 并发量过高会导致被风控 请合理设置线程数、等待时间和执行时间 不要长时间的执行此程序（我配置的线程数和间隔 2分钟以内）
+    //如果想等过高峰期后进行简陋 长时间执行 则将线程数改为1  间隔时间改为10秒以上 并发越小越像真人 不会被风控  要更真一点就用随机数（自己处理）
+
+    //并发执行策略
+    //policy设置1 人工模式 运行程序则开始抢
+    //policy设置2 时间触发 运行程序后等待早上5点59分30秒开始
+    //policy设置3 时间触发 运行程序后等待早上8点29分30秒开始
+    private final int policy;
+
+    //最小订单成交金额 举例如果设置成50 那么订单要超过50才会下单
+    private final double minOrderPrice;
+
+    //基础信息执行线程数
+    private final int baseTheadSize;
+
+    //提交订单执行线程数
+    private final int submitOrderTheadSize;
+
+    //取随机数
+    //请求间隔时间最小值
+    private final int sleepMillisMin;
+    //请求间隔时间最大值
+    private final int sleepMillisMax;
+
+
+    private static void sleep(int millis) {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException ignored) {
@@ -26,32 +79,7 @@ public class Application {
         return currentHour == hour && currentMinute == minute && currentSecond >= second;
     }
 
-    public static void main(String[] args) {
-        //此为高峰期策略 通过同时获取或更新 购物车、配送、订单确认信息再进行高并发提交订单
-        //一定要注意 并发量过高会导致被风控 请合理设置线程数、等待时间和执行时间 不要长时间的执行此程序（我配置的线程数和间隔 2分钟以内）
-        //如果想等过高峰期后进行简陋 长时间执行 则将线程数改为1  间隔时间改为10秒以上 并发越小越像真人 不会被风控  要更真一点就用随机数（自己处理）
-
-        //并发执行策略
-        //policy设置1 人工模式 运行程序则开始抢
-        //policy设置2 时间触发 运行程序后等待早上5点59分30秒开始
-        //policy设置3 时间触发 运行程序后等待早上8点29分30秒开始
-        int policy = 1;//默认人工模式
-
-        //最小订单成交金额 举例如果设置成50 那么订单要超过50才会下单
-        double minOrderPrice = 0;
-
-        //基础信息执行线程数
-        int baseTheadSize = 2;
-
-        //提交订单执行线程数
-        int submitOrderTheadSize = 4;
-
-        //取随机数
-        //请求间隔时间最小值
-        int sleepMillisMin = 300;
-        //请求间隔时间最大值
-        int sleepMillisMax = 500;
-
+    public void run() {
 
         //5点59分30秒时间触发
         while (policy == 2 && !timeTrigger(5, 59, 30)) {
