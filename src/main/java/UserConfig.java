@@ -72,10 +72,10 @@ public class UserConfig {
         body.put("sharer_uid", "");
         body.put("h5_source", "");
         body.put("time", headers.get("ddmc-time"));
+        body.put("openid", headers.get("ddmc-device-id"));
 
-        // ------------  填入这3项上面不要动 ------------
+        // ------------  填入这2项上面不要动 ------------
         body.put("s_id", "");
-        body.put("openid", "");
         body.put("device_token", "");
         return body;
     }
