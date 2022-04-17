@@ -43,7 +43,7 @@ public class Sentinel {
                     if (longWaitCount++ > 60) {
                         longWaitCount = 0;
                         System.out.println("执行60次循环后，休息10分钟左右再继续");
-                        sleep(RandomUtil.randomInt(50000, 70000));
+                        sleep(RandomUtil.randomInt(500000, 700000));
                     } else {
                         sleep(RandomUtil.randomInt(sleepMillisMin, sleepMillisMax));
                     }
