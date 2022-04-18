@@ -651,66 +651,128 @@ var randStr = function () {
     return n;
 };
 
-function i(e, t, n) {
-    return t in e ? Object.defineProperty(e, t, {
-        value: n,
-        enumerable: !0,
-        configurable: !0,
-        writable: !0
-    }) : e[t] = n, e;
-}
-
-function r(e, t) {
-    var n = Object.keys(e);
-    if (Object.getOwnPropertySymbols) {
-        var r = Object.getOwnPropertySymbols(e);
-        t && (r = r.filter(function (t) {
-            return Object.getOwnPropertyDescriptor(e, t).enumerable;
-        })), n.push.apply(n, r);
+var md5_hex = (function () {
+    function n(e, t) {
+        e[t >> 5] |= 128 << t % 32, e[14 + (t + 64 >>> 9 << 4)] = t;
+        for (var n = 271733878, r = -271733879, u = 1732584193, l = -1732584194, f = 0; f < e.length; f += 16) {
+            var p = n, d = r, h = u, v = l;
+            r = c(r = c(r = c(r = c(r = a(r = a(r = a(r = a(r = i(r = i(r = i(r = i(r = o(r = o(r = o(r = o(r, u = o(u, l = o(l, n = o(n, r, u, l, e[f + 0], 7, -680876936), r, u, e[f + 1], 12, -389564586), n, r, e[f + 2], 17, 606105819), l, n, e[f + 3], 22, -1044525330), u = o(u, l = o(l, n = o(n, r, u, l, e[f + 4], 7, -176418897), r, u, e[f + 5], 12, 1200080426), n, r, e[f + 6], 17, -1473231341), l, n, e[f + 7], 22, -45705983), u = o(u, l = o(l, n = o(n, r, u, l, e[f + 8], 7, 1770035416), r, u, e[f + 9], 12, -1958414417), n, r, e[f + 10], 17, -42063), l, n, e[f + 11], 22, -1990404162), u = o(u, l = o(l, n = o(n, r, u, l, e[f + 12], 7, 1804603682), r, u, e[f + 13], 12, -40341101), n, r, e[f + 14], 17, -1502002290), l, n, e[f + 15], 22, 1236535329), u = i(u, l = i(l, n = i(n, r, u, l, e[f + 1], 5, -165796510), r, u, e[f + 6], 9, -1069501632), n, r, e[f + 11], 14, 643717713), l, n, e[f + 0], 20, -373897302), u = i(u, l = i(l, n = i(n, r, u, l, e[f + 5], 5, -701558691), r, u, e[f + 10], 9, 38016083), n, r, e[f + 15], 14, -660478335), l, n, e[f + 4], 20, -405537848), u = i(u, l = i(l, n = i(n, r, u, l, e[f + 9], 5, 568446438), r, u, e[f + 14], 9, -1019803690), n, r, e[f + 3], 14, -187363961), l, n, e[f + 8], 20, 1163531501), u = i(u, l = i(l, n = i(n, r, u, l, e[f + 13], 5, -1444681467), r, u, e[f + 2], 9, -51403784), n, r, e[f + 7], 14, 1735328473), l, n, e[f + 12], 20, -1926607734), u = a(u, l = a(l, n = a(n, r, u, l, e[f + 5], 4, -378558), r, u, e[f + 8], 11, -2022574463), n, r, e[f + 11], 16, 1839030562), l, n, e[f + 14], 23, -35309556), u = a(u, l = a(l, n = a(n, r, u, l, e[f + 1], 4, -1530992060), r, u, e[f + 4], 11, 1272893353), n, r, e[f + 7], 16, -155497632), l, n, e[f + 10], 23, -1094730640), u = a(u, l = a(l, n = a(n, r, u, l, e[f + 13], 4, 681279174), r, u, e[f + 0], 11, -358537222), n, r, e[f + 3], 16, -722521979), l, n, e[f + 6], 23, 76029189), u = a(u, l = a(l, n = a(n, r, u, l, e[f + 9], 4, -640364487), r, u, e[f + 12], 11, -421815835), n, r, e[f + 15], 16, 530742520), l, n, e[f + 2], 23, -995338651), u = c(u, l = c(l, n = c(n, r, u, l, e[f + 0], 6, -198630844), r, u, e[f + 7], 10, 1126891415), n, r, e[f + 14], 15, -1416354905), l, n, e[f + 5], 21, -57434055), u = c(u, l = c(l, n = c(n, r, u, l, e[f + 12], 6, 1700485571), r, u, e[f + 3], 10, -1894986606), n, r, e[f + 10], 15, -1051523), l, n, e[f + 1], 21, -2054922799), u = c(u, l = c(l, n = c(n, r, u, l, e[f + 8], 6, 1873313359), r, u, e[f + 15], 10, -30611744), n, r, e[f + 6], 15, -1560198380), l, n, e[f + 13], 21, 1309151649), u = c(u, l = c(l, n = c(n, r, u, l, e[f + 4], 6, -145523070), r, u, e[f + 11], 10, -1120210379), n, r, e[f + 2], 15, 718787259), l, n, e[f + 9], 21, -343485551),
+                n = s(n, p), r = s(r, d), u = s(u, h), l = s(l, v);
+        }
+        return [n, r, u, l];
     }
-    return n;
-}
 
-function o(e) {
-    for (var t = 1; t < arguments.length; t++) {
-        var n = null != arguments[t] ? arguments[t] : {};
-        t % 2 ? r(Object(n), !0).forEach(function (t) {
-            i(e, t, n[t]);
-        }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(n)) : r(Object(n)).forEach(function (t) {
-            Object.defineProperty(e, t, Object.getOwnPropertyDescriptor(n, t));
-        });
+    function r(e, t, n, r, o, i) {
+        return s(u(s(s(t, e), s(r, i)), o), n);
     }
-    return e;
-}
 
-funSesiEncrypt = function (e) {
-    try {
-        var t = md5(e).substring(5, 21), n = randStr(7), a = md5(n)
-        return n + md5(a + e + t + n);
-    } catch (e) {
-        var c = randStr(18);
-        return md5(c) + c.substring(5, 12);
+    function o(e, t, n, o, i, a, c) {
+        return r(t & n | ~t & o, e, t, i, a, c);
     }
-};
 
-function a(e) {
-    var t = e.uid, n = void 0 === t ? "" : t, r = "2lRMzaGLtb1zS5^WkQ3LcuOy^gC$0EB3Ys!%hDSzjQY891$yjB";
-    var i = o(o({}, e), {}, {
-        private_key: n || r
-    }), s = "", u = Object.keys(i).sort();
-    u.forEach(function (e, t) {
-        s += "".concat(e, "=").concat(i[e]).concat(t < u.length - 1 ? "&" : "");
-    });
-    var l = md5(s);
-    return {
-        nars: l,
-        sesi: funSesiEncrypt(l)
+    function i(e, t, n, o, i, a, c) {
+        return r(t & o | n & ~o, e, t, i, a, c);
+    }
+
+    function a(e, t, n, o, i, a, c) {
+        return r(t ^ n ^ o, e, t, i, a, c);
+    }
+
+    function c(e, t, n, o, i, a, c) {
+        return r(n ^ (t | ~o), e, t, i, a, c);
+    }
+
+    function s(e, t) {
+        var n = (65535 & e) + (65535 & t);
+        return (e >> 16) + (t >> 16) + (n >> 16) << 16 | 65535 & n;
+    }
+
+    function u(e, t) {
+        return e << t | e >>> 32 - t;
+    }
+
+    function l(e) {
+        for (var t = [], n = (1 << d) - 1, r = 0; r < e.length * d; r += d) t[r >> 5] |= (e.charCodeAt(r / d) & n) << r % 32;
+        return t;
+    }
+
+    function f(e) {
+        for (var t = p ? "0123456789ABCDEF" : "0123456789abcdef", n = "", r = 0; r < 4 * e.length; r++) n += t.charAt(e[r >> 2] >> r % 4 * 8 + 4 & 15) + t.charAt(e[r >> 2] >> r % 4 * 8 & 15);
+        return n;
+    }
+
+    var p = 0, d = 8;
+    return function (e) {
+        return f(n(l(e), e.length * d));
     };
-}
+})();
+
+var funSesiEncrypt = (function() {
+    return function (e) {
+        try {
+            var t = md5_hex(e).substring(5, 21), n = randStr(7), a = md5(n)
+            return n + md5_hex(a + e + t + n);
+        } catch (e) {
+            var c = randStr(18);
+            return md5(c) + c.substring(5, 12);
+        }
+    }
+})();
+
+var _sign = (function () {
+    function i(e, t, n) {
+        return t in e ? Object.defineProperty(e, t, {
+            value: n,
+            enumerable: !0,
+            configurable: !0,
+            writable: !0
+        }) : e[t] = n, e;
+    }
+
+    function r(e, t) {
+        var n = Object.keys(e);
+        if (Object.getOwnPropertySymbols) {
+            var r = Object.getOwnPropertySymbols(e);
+            t && (r = r.filter(function (t) {
+                return Object.getOwnPropertyDescriptor(e, t).enumerable;
+            })), n.push.apply(n, r);
+        }
+        return n;
+    }
+
+    function o(e) {
+        for (var t = 1; t < arguments.length; t++) {
+            var n = null != arguments[t] ? arguments[t] : {};
+            t % 2 ? r(Object(n), !0).forEach(function (t) {
+                i(e, t, n[t]);
+            }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(n)) : r(Object(n)).forEach(function (t) {
+                Object.defineProperty(e, t, Object.getOwnPropertyDescriptor(n, t));
+            });
+        }
+        return e;
+    }
+
+    function a(e) {
+        var t = e.uid, n = void 0 === t ? "" : t, r = "2lRMzaGLtb1zS5^WkQ3LcuOy^gC$0EB3Ys!%hDSzjQY891$yjB";
+        var i = o(o({}, e), {}, {
+            private_key: n || r
+        }), s = "", u = Object.keys(i).sort();
+        u.forEach(function (e, t) {
+            s += "".concat(e, "=").concat(i[e]).concat(t < u.length - 1 ? "&" : "");
+        });
+        var l = md5(s);
+        return {
+            nars: l,
+            sesi: funSesiEncrypt(l)
+        };
+    }
+
+    return a;
+})();
 
 
-function sign(body){
+function sign(body) {
     return JSON.stringify(
-        a(JSON.parse(body))
+        _sign(JSON.parse(body))
     );
 }
