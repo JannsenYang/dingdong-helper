@@ -26,6 +26,15 @@ public class Application {
         return currentHour == hour && currentMinute == minute && currentSecond >= second;
     }
 
+    private static void barkNotice(String barkId) {
+        // sound=minuet 这里可在bark app选择自己喜爱的铃声
+        HttpRequest httpRequest = HttpUtil.createGet("https://api.day.app/" + barkId + "/抢到菜了，请立即支付?sound=minuet");
+        // sound=alert 仅弹窗
+        /// HttpRequest httpRequest = HttpUtil.createGet("https://api.day.app/" + barkId + "/抢到菜了，请速去支付?sound=alert");
+        String body = httpRequest.execute().body();
+        System.out.println(body);
+    }
+
     public static void main(String[] args) {
         //此为高峰期策略 通过同时获取或更新 购物车、配送、订单确认信息再进行高并发提交订单
         //一定要注意 并发量过高会导致被风控 请合理设置线程数、等待时间和执行时间 不要长时间的执行此程序（我配置的线程数和间隔 2分钟以内）
@@ -135,6 +144,8 @@ public class Application {
                     }
                     if (Api.addNewOrder(UserConfig.addressId, Api.context.get("cartMap"), Api.context.get("multiReserveTimeMap"), Api.context.get("checkOrderMap"))) {
                         System.out.println("铃声持续1分钟，终止程序即可，如果还需要下单再继续运行程序");
+                        // 需要下载bark app,替换成自己的bark id,详情见image/bark id.jpg
+                        barkNotice("Rxfz6NCdkWAUXXXXXXXKF");
                         Api.play();
                     }
                 }
