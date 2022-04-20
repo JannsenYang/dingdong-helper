@@ -48,9 +48,9 @@ public class Application {
 
         //取随机数
         //请求间隔时间最小值
-        int sleepMillisMin = 300;
+        int sleepMillisMin = 50;
         //请求间隔时间最大值
-        int sleepMillisMax = 500;
+        int sleepMillisMax = 300;
 
 
         //5点59分30秒时间触发
