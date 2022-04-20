@@ -442,7 +442,7 @@ public class Api {
             Map<String, Object> request = UserConfig.getBody(headers);
             request.put("showMsg", "false");
             request.put("showData", "true");
-            request.put("ab_config", "{\"key_onion\":\"C\"}");
+            request.put("ab_config", "{\"key_onion\":\"D\", \"key_cart_discount_price\":\"C\"}");
 
             Map<String, Object> packageOrderMap = new HashMap<>();
             Map<String, Object> paymentOrderMap = new HashMap<>();

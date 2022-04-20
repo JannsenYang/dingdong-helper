@@ -32,7 +32,7 @@ public class UserConfig {
         Map<String, String> headers = new HashMap<>();
         headers.put("ddmc-city-number", cityId);
         headers.put("ddmc-time", String.valueOf(new Date().getTime() / 1000));
-        headers.put("ddmc-build-version", "2.83.0");
+        headers.put("ddmc-build-version", "2.83.1");
         headers.put("ddmc-station-id", stationId);
         headers.put("ddmc-channel", "applet");
         headers.put("ddmc-os-version", "[object Undefined]");
